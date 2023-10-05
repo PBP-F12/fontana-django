@@ -1,4 +1,4 @@
-How to start the app:
+#### How to start the app:
 
 1. Open Terminal or CMD
 2. `git clone <URL>`. Replace the URL with this: https://github.com/PBP-F12/bookshelve-django.git
