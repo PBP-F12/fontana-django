@@ -11,14 +11,22 @@
 
 # Anggota Kelompok PBP F12:
 
-1. Muhammad Ilham Zikri
-2. Ratu Nadya Anjania
-3. Mikhail Haritz
-4. Raisa Hannaliya Zahra
+1. Muhammad Ilham Zikri - 2206083533
+2. Ratu Nadya Anjania - 2206029752
+3. Mikhail Haritz - 2206082764
+4. Raisa Hannaliya Zahra - 2206820503
 5. Raisyam Muhammad Fauzan Burhani - 2206027772
 
 # Cerita aplikasi yang diajukan serta manfaatnya
 
 # Daftar modul yang akan diimplementasikan
+
+1. Auth (`auth`)
+2. Landing Page (`landing_page`)
+3. Bookmark (`bookmark`)
+4. Review (`review`)
+5. Event (`event`)
+6. Publish (`publish`)
+7. Forum (`forum`)
 
 # Sumber dataset katalog buku
