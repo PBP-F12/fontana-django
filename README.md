@@ -37,3 +37,29 @@ Dikarenakan aplikasi yang kami kembangkan ditujukan pada beberapa jenis pengguna
 
 Untuk dataset buku, kami menggunakan dataset yang disediakan oleh user Old Monk di platform Kaggle.
 https://www.kaggle.com/datasets/saurabhbagchi/books-dataset
+
+# Persona
+
+## Akses admin:
+
+1. Membuat dan mempublikasikan event
+2. Mengatur database dari website
+3. Melakukan perubahan dan pembaruan fitur pada website
+4. Mengakses landing page
+5. Bisa publish buku
+
+## Akses penulis:
+
+1. Bisa publish buku
+2. Me-review buku lain selain dari buku miliknya sendiri
+3. Berinteraksi dengan pengguna lainnya (baik pembaca maupun penulis) dalam forum diskusi
+4. Melihat event yang sedang berlangsung
+5. Mengakses landing page
+
+## Akses pembaca:
+
+1. Me-review buku
+2. Mengakses page bookmark untuk menyimpan buku yang diinginkan
+3. Berinteraksi dengan pengguna lainnya (baik pembaca maupun penulis) dalam forum diskusi
+4. Melihat event yang sedang berlangsung
+5. Mengakses landing page
