@@ -35,3 +35,18 @@ class Author(User):
 
     class Meta:
         proxy = True  # prevent generate class table in database
+
+
+class ReaderManager(BaseUserManager):
+    def get_queryset(self, *args, **kwargs) -> QuerySet:
+        result = super().get_queryset(*args, **kwargs)
+        return result.filter(role=User.Role.READER)
+
+
+class Reader(User):
+    base_role = User.Role.READER
+
+    author = ReaderManager()
+
+    class Meta:
+        proxy = True  # prevent generate class table in database
