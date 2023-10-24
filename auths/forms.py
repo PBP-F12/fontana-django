@@ -5,16 +5,16 @@ from .models import User, Author, Reader
 class AdminRegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'password')
+        fields = ('username',)
 
 
 class AuthorRegistrationForm(UserCreationForm):
     class Meta:
         model = Author
-        fields = ('username', 'password')
+        fields = ('username',)
 
 
 class ReaderRegistrationForm(UserCreationForm):
     class Meta:
         model = Reader
-        fields = ('username', 'password')
+        fields = ('username',)
