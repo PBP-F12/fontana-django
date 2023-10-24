@@ -17,7 +17,7 @@ def register_as_reader(request):
             messages.success(
                 request, 'Your account has been successfully created!')
             return redirect('auths:login')
-    context = {'form': form}
+    context = {'role': 'Reader', 'form': form}
     return render(request, 'register.html', context)
 
 
