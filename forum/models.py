@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from publish.models import Book
+from main.models import Book
 from django.utils import timezone
 from auths.models import Reader
 
