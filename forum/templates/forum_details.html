@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Forum Title: {{ forum.forum_title }}</h1>
+
+<div>
+	<h3>Replies</h3>
+	<form method="POST">
+		{% csrf_token %}
+		<table>
+			{{ reply_form.as_table }}
+			<tr>
+				<td></td>
+				<td>
+					<input type="submit" value="Send comment" />
+				</td>
+			</tr>
+		</table>
+	</form>
+	<div>
+		{% for reply in replies %}
+		<div>
+			<h4>{{reply.commentor_id.username}}</h4>
+			<p>{{reply.text}}</p>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock content %}
