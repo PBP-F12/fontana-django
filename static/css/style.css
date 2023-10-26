@@ -19,6 +19,10 @@ body > main {
   min-height: 100%;
 }
 
+.background-creamy {
+  background: var(--creamy-1);
+}
+
 .text-creamy {
   color: var(--creamy-1);
 }
@@ -134,4 +138,30 @@ footer {
 
 .top-card-book img {
   border-radius: 10px;
+}
+
+#top-card-book-container {
+  /* Hide both vertical and horizontal scrollbars in Firefox */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+  /* Hide vertical scrollbar in Internet Explorer */
+  -ms-overflow-style: none;
+}
+
+/* Hide the vertical scrollbar in WebKit browsers */
+#top-card-book-container::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Hide the horizontal scrollbar in WebKit browsers */
+#top-card-book-container::-webkit-scrollbar:horizontal {
+  height: 0;
+}
+
+/* Optionally, you can style the track and thumb (not recommended for complete removal) */
+#top-card-book-container::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+#top-card-book-container::-webkit-scrollbar-track {
+  background: transparent;
 }
