@@ -51,8 +51,17 @@
 		</div>
 	</div>
 
-	<div id="explore-the-world" class="w-[85%] mt-8 mx-auto justify-center flex flex-col gap-4">
+	<div id="explore-the-world" class="w-[85%] mt-8 mx-auto justify-center flex flex-col gap-8">
 		<h1 class="font-young-serif text-4xl">Explore the World!</h1>
+
+		<form action="GET" class="flex flex-row gap-2 mx-auto justify-center items-center w-full">
+			<input type="text" placeholder="Search book..."
+				class="h-fit p-2 w-[50%] max-h-[500px] glassmorphism text-white-creamy">
+			<button type="submit">
+				<img src="{% static 'icon/search_icon.svg' %}" class="background-creamy w-fit h-fit rounded-full p-2 w-[40px]">
+			</button>
+		</form>
+
 		<div id="explore-card-book-container" class="flex flex-row flex-wrap gap-6 justify-center">
 			{% for book in explore_books %}
 			<a href="">
