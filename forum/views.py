@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.decorators import login_required
 
 from .models import Forum, ForumReply
 from .forms import ForumForm, ForumReplyForm
@@ -8,6 +9,7 @@ from .forms import ForumForm, ForumReplyForm
 # Create your views here.
 
 
+@login_required(login_url=reverse_lazy('auths:login'))
 def create_forum(request):
     # check if user role is READER
     if request.user.role != 'READER':
@@ -25,9 +27,10 @@ def create_forum(request):
         return HttpResponseRedirect(reverse('forum:display_all_forum'))
 
     context = {'form': form}
-    return render(request, "create_form.html", context)
+    return render(request, "create_forum.html", context)
 
 
+@login_required(login_url=reverse_lazy('auths:login'))
 def display_all_forum(request):
     # return forbidden if user role is not READER
     if request.user.role != 'READER':
@@ -41,6 +44,7 @@ def display_all_forum(request):
     return render(request, 'all_forums.html', context)
 
 
+@login_required(login_url=reverse_lazy('auths:login'))
 def display_forum_by_id(request, forum_id):
     if request.user.role != 'READER':
         return HttpResponseForbidden('FORBIDDEN')
