@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Young+Serif&display=swap");
+
+:root {
+  --creamy-0: #f8ede3;
+  --creamy-1: #eac696;
+  --creamy-2: #c8ae7d;
+  --brown-1: #765827;
+  --brown-2: #65451f;
+  --black: #333333;
+}
+
+body {
+  font-family: "Merriweather", serif;
+  background: var(--creamy-2);
+  color: var(--black);
+}
+
+body > main {
+  min-height: 100%;
+}
+
+.text-creamy {
+  color: var(--creamy-1);
+}
+
+.text-brown {
+  color: var(--brown-1);
+}
+
+.text-black-young {
+  color: var(--black);
+}
+
+.text-white-creamy {
+  color: var(--creamy-0);
+}
+
+.font-young-serif {
+  font-family: "Young Serif", serif;
+}
+
+.font-color-white {
+  color: var(--white) !important;
+}
+
+.font-color-black {
+  color: var(--black) !important;
+}
+
+/* AUTH */
+.entry-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+button,
+input[type="submit"] {
+  background-color: var(--earthy-100);
+  color: var(--black);
+  padding: 8px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* MAIN */
+header {
+  background: var(--brown-1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+header nav {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  background: var(--brown-1);
+  padding: 20px;
+}
+
+#main-picture {
+  object-fit: cover;
+  position: absolute;
+  z-index: 0;
+}
+
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  backdrop-filter: blur(20px); /* Apply a blur effect to the background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.glassmorphism-full-transparent {
+  background: rgba(255, 255, 255, 0); /* Semi-transparent white background */
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  backdrop-filter: blur(20px); /* Apply a blur effect to the background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.explore-card-book {
+  width: 200px;
+  transition: scale 0.5s ease;
+}
+
+.explore-card-book:hover {
+  scale: 1.05;
+}
+
+.explore-card-book > img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.explore-card-book h3 {
+  font-size: 18px;
+}
+
+.top-card-book {
+  width: 500px;
+}
+
+.top-card-book img {
+  border-radius: 10px;
+}

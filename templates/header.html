@@ -1,0 +1,13 @@
+<header class="glassmorphism fixed z-20 w-[80%] top-[10px] left-[50%] translate-x-[-50%] text-white-creamy">
+	<h1 class="font-young-serif text-2xl">Fontana</h1>
+	<nav class="flex justify-center items-center">
+		<a href="">Home</a>
+		<a href="">Events</a>
+		{% if role == 'READER' %}
+		<a href="">Bookmarks</a>
+		{% elif role == 'AUTHOR' %}
+		<a href="">My Books</a>
+		{% endif %}
+		<a href="{% url 'auths:logout' %}">Log Out</a>
+	</nav>
+</header>

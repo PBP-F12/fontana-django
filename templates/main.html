@@ -1,5 +1,82 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<title>Main Page</title>
+{% endblock meta %}
+
 {% block content %}
-<h1>Welcome to main!</h1>
-<a href="{% url 'auths:logout' %}">Log Out</a>
+{% include 'header.html' %}
+<main>
+	{% block main_content %}
+	<div class="h-[400px]">
+		<img id="main-picture" src="{% static 'img/library_bg.jpg' %}" alt="library background" class="w-full h-[400px]">
+		<div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
+		<div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
+			<h1 class="font-young-serif text-creamy text-5xl drop-shadow-2xl">Fontana</h1>
+			<p class="text-creamy">The only spring you need.</p>
+		</div>
+	</div>
+
+	<div id="trending-books" class="mt-4 flex flex-col gap-4">
+		<h1 class="font-young-serif text-4xl w-[85%] mx-auto">See the top!</h1>
+		<div id="top-card-book-container"
+			class="flex flex-row gap-6 justify-center overflow-x-scroll overflow-y-hidden p-4 pt-16">
+			{% for book in books %}
+			<a href="">
+				<div
+					style="background-image: url('{{ book.book_cover_link }}'); background-repeat: no-repeat; background-size: cover; object-fit: cover;"
+					class="rounded-[10px]">
+					<div class="top-card-book glassmorphism-full-transparent flex flex-row gap-2 h-[150px] p-2 pl-6">
+						<img src="{{ book.book_cover_link }}" class="h-[200px] relative top-[-70px]">
+						<div class="flex flex-col justify-around">
+							<div>
+								<h3 class="font-young-serif text-lg text-white-creamy">{{ book.book_title }}</h3>
+								<div class="flex items-center gap-2">
+									<p>{{ book.author_id.username }}</p>
+									<img src="{% static 'icon/dot-single.svg' %}" class="w-[20px]">
+									<div class="flex justify-center items-center">
+										<img src="{% static 'icon/rating_star.svg' %}" class="w-[20px]">
+										<p>{{ book.avg_rating }}/10</p>
+									</div>
+								</div>
+							</div>
+							<p>{{ book.description|slice:"0:50"|add:"..." }}</p>
+						</div>
+					</div>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div id="explore-the-world" class="w-[85%] mt-8 mx-auto justify-center flex flex-col gap-4">
+		<h1 class="font-young-serif text-4xl">Explore the World!</h1>
+		<div id="explore-card-book-container" class="flex flex-row flex-wrap gap-6 justify-center">
+			{% for book in books %}
+			<a href="">
+				<div class="explore-card-book flex flex-col gap-2">
+					<img src="{{ book.book_cover_link }}">
+
+					<div class="max-w-[302px]">
+						{% if book.book_title|length > 30 %}
+						<h3 class="font-young-serif">{{ book.book_title|slice:"0:30"|add:"..." }}</h3>
+						{% else %}
+						<h3 class="font-young-serif">{{ book.book_title }}</h3>
+						{% endif %}
+
+						<div class="flex items-center">
+							<p class="text-brown">{{ book.author_id.username }}</p>
+						</div>
+					</div>
+				</div>
+			</a>
+			{% endfor %}
+		</div>
+	</div>
+	{% endblock main_content %}
+</main>
+
+{% include 'footer.html' %}
 {% endblock content %}
