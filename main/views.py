@@ -13,5 +13,9 @@ def show_main(request):
     else:
         books = Book.objects.all()
 
-    context = {'role': request.user.role, 'books': books}
+    top_books = books[0:9]
+    explore_books = books[10:100]
+
+    context = {'role': request.user.role,
+               'top_books': top_books, 'explore_books': explore_books}
     return render(request, 'main.html', context)
