@@ -1,0 +1,8 @@
+{% extends 'main.html' %}
+{% block main_content %}
+
+{% for bookmark in bookmarks %}
+    <p>{{ bookmark.book_id.book_title }}</p>
+{% endfor %}
+
+{% endblock %}
