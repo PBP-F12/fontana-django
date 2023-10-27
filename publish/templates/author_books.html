@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Your Books</h1>
+<table>
+	<thead>
+		<td>Title</td>
+		<td>Image Cover</td>
+		<td>Rating</td>
+	</thead>
+	<tbody>
+		{% for book in books %}
+		<tr>
+			<td>{{ book.book_title }}</td>
+			<td>
+				{% if book.book_cover_file %}
+				<img src="{{ book.book_cover_file }}" alt="">
+				{% else %}
+				<img src="{{ book.book_cover_link }}" alt="">
+				{% endif %}
+			</td>
+			<td>{{ book.avg_rating }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock content %}

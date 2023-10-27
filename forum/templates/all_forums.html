@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>List Forums</h1>
+<a href="{% url 'forum:create_forum' %}">Create Forum</a>
+<ul>
+	{% for forum in forums %}
+	<li>
+		<h2><a href="{% url 'forum:display_forum_by_id' forum.forum_id %}">{{ forum.forum_title }} by
+				{{ forum.forum_creator_id }}</a></h2>
+	</li>
+	{% endfor %}
+</ul>
+{% endblock content %}

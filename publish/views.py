@@ -3,12 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 
-from publish.models import Book
+from main.models import Book
 from .forms import BookForm
-from auth.models import Author
+from auths.models import Author
 
 # Create your views here.
-
 @login_required(login_url=reverse_lazy('auths:login'))
 def publish_book(request):
     # Check if user.role is AUTHOR, return FORBIDDEN if not
@@ -22,8 +21,7 @@ def publish_book(request):
         if form.is_valid():
             # Add author field before saving the book to database
             book = form.save(commit=False)
-            author = Author.objects.get(user=request.user)
-            book.author_id = Author[0]
+            book.author_id = request.user
             # Save book to database
             book.save()    
             return HttpResponseRedirect(reverse('publish:get_book_by_author'))
