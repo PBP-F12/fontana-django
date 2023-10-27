@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'main',
     'auths',
     'publish',
-    'forum'
+    'forum',
+    'event'
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Fontana Events</h1>
+<!-- <table>
+    <tr>
+        <th>Name</th>
+        <th>Poster Link</th>
+        <th>Date Added</th>
+        <th>Date Event</th>
+        <th>Author</th>
+    </tr>
+
+    {% for event in events %}
+        <tr>
+            <td><a href="{% url 'event:get_event_details' event.event_id %}">{{event.event_name}}</a></td>
+            <td>{{event.poster_link}}</td>
+            <td>{{event.date}}</td>
+            <td>{{event.event_date}}</td>
+            <td>{{event.book_id.author_id.username}}</td>
+        </tr>
+    {% endfor %}
+</table> -->
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for event in events %}
+        <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white">
+            <img class="w-full h-48 object-cover" src="{{ event.poster_link }}" alt="{{ event.event_name }}">
+            <div class="px-6 py-4">
+                <a href="{% url 'event:get_event_details' event.event_id %}" class="font-bold text-xl mb-2 block">{{ event.event_name }}</a>
+                <p class="text-gray-600">Event Date: {{ event.event_date }}</p>
+                <p class="text-gray-600">Author: {{ event.book_id.author_id.username }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- <div class="row">
+    {% for event in events %}
+        <div class="col-md-3 mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{event.event_name}}</h5>
+                <p class="card-text">Event Date: {{ event.event_date }}</p>
+                <p class="card-text">Date Added: {{item.date_added}}</p>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:4 and not forloop.last %}
+            </div><div class="row">
+        {% endif %}
+    {% endfor %}
+</div> -->
+
+<br />
+
+<a href="{% url 'event:publish_event' %}">
+    <button>
+        Publish Event
+    </button>
+</a>
+
+{% endblock content %}
