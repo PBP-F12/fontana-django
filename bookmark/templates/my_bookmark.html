@@ -1,8 +1,27 @@
 {% extends 'main.html' %}
 {% block main_content %}
+<div class="flex gap-4 flex-wrap">
+    {% for bookmark in bookmarks %}
+    <div class="flex flex-col">
+        <a href="">
+            <div class="explore-card-book flex flex-col gap-2">
+                <img src="{{ bookmark.book_id.book_cover_link }}">
 
-{% for bookmark in bookmarks %}
-    <p>{{ bookmark.book_id.book_title }}</p>
-{% endfor %}
+                <div class="max-w-[302px]">
+                    {% if bookmark.book_id.book_title|length > 30 %}
+                    <h3 class="font-young-serif">{{ bookmark.book_id.book_title|slice:"0:30"|add:"..." }}</h3>
+                    {% else %}
+                    <h3 class="font-young-serif">{{ bookmark.book_id.book_title }}</h3>
+                    {% endif %}
+
+                    <div class="flex items-center">
+                        <p class="text-brown">{{ bookmark.book_id.author_id.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
 
 {% endblock %}
