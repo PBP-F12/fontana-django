@@ -1,28 +1,45 @@
 {% extends 'main.html' %}
+{% load static %}
 {% block main_content %}
-<h1>Forum Title: {{ forum.forum_title }}</h1>
-
-<div>
-	<h3>Replies</h3>
-	<form method="POST">
-		{% csrf_token %}
-		<table>
-			{{ reply_form.as_table }}
-			<tr>
-				<td></td>
-				<td>
-					<input type="submit" value="Send comment" />
-				</td>
-			</tr>
-		</table>
-	</form>
-	<div>
-		{% for reply in replies %}
-		<div>
-			<h4>{{reply.commentor_id.username}}</h4>
-			<p>{{reply.text}}</p>
+<div class="w-[85%] mx-auto mt-[100px]">
+	<div class="flex gap-4">
+		<img src="{{forum.book_topic.book_cover_link}}" class="rounded-[20px]">
+		<div class="flex flex-col gap-8">
+			<div class="flex flex-col gap-1">
+				<h1 class="font-young-serif text-4xl">{{ forum.forum_title }}</h1>
+				<div class="flex gap-2">
+					<p>Created by <span class="text-brown">{{ forum.forum_creator_id }}</span></p>
+					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
+					<p>Book {{ forum.book_topic.book_title }}</p>
+				</div>
+			</div>
+			<div>
+				<h2 class="font-young-serif text-xl">Discussion</h2>
+				<p>{{ forum.forum_discussion }}</p>
+			</div>
 		</div>
-		{% endfor %}
+	</div>
+
+	<div class="mt-8">
+		<h2 class="font-young-serif text-2xl">Comments ({{ forum.num_comments }})</h2>
+
+		<form method="POST" class="flex flex-row gap-2 mx-auto justify-center items-center w-full">
+			{% csrf_token %}
+			<input type="text" name="text" placeholder="Reply..."
+				class="h-fit p-2 w-[50%] max-h-[500px] glassmorphism text-white-creamy">
+			<button type="submit">
+				<img src="{% static 'icon/send_icon.svg' %}" class="background-creamy w-fit h-fit rounded-full p-2 w-[40px]">
+			</button>
+		</form>
+
+		<div id="replies-container" class="mt-4 flex flex-col gap-3">
+			{% for reply in replies %}
+			<div class="glassmorphism p-3">
+				<h4 class="font-young-serif text-xl">{{reply.commentor_id.username}}</h4>
+				<p>{{reply.text}}</p>
+			</div>
+			{% endfor %}
+		</div>
 	</div>
 </div>
 {% endblock main_content %}
