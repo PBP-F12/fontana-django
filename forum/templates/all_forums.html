@@ -1,13 +1,30 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>List Forums</h1>
-<a href="{% url 'forum:create_forum' %}">Create Forum</a>
-<ul>
-	{% for forum in forums %}
-	<li>
-		<h2><a href="{% url 'forum:display_forum_by_id' forum.forum_id %}">{{ forum.forum_title }} by
-				{{ forum.forum_creator_id }}</a></h2>
-	</li>
-	{% endfor %}
-</ul>
-{% endblock content %}
+{% extends 'main.html' %}
+{% load static %}
+{% block main_content %}
+<div class="h-[400px]">
+	<img id="main-picture" src="{% static 'img/library_bg_2.jpg' %}" alt="library background" class="w-full h-[400px]">
+	<div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
+	<div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
+		<h1 class="font-young-serif text-creamy text-5xl drop-shadow-2xl">Forum</h1>
+		<p class="text-creamy">Discuss with people. Talk about books you like.</p>
+	</div>
+</div>
+<div class="mt-[100px] w-[85%] mx-auto max-w-[1000px] flex flex-col gap-4">
+	<div>
+		<h1 class="font-young-serif text-4xl">Forums</h1>
+		<div class="flex gap-1 items-center">
+			<p>Let's talk about book. Or</p>
+			<a href="{% url 'forum:create_forum' %}" class=" background-brown text-white-creamy p-2 py-1 rounded-xl">Create
+				Forum</a>
+		</div>
+	</div>
+	<div>
+		{% for forum in forums %}
+		<a href="{% url 'forum:display_forum_by_id' forum.forum_id %}" class="block glassmorphism w-full p-5">
+			<h2 class="font-young-serif text-2xl">{{ forum.forum_title }}</h2>
+			<p>by <span class="text-brown">{{ forum.forum_creator_id }}</span></p>
+		</a>
+		{% endfor %}
+	</div>
+</div>
+{% endblock main_content %}

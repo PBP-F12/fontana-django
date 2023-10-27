@@ -23,6 +23,10 @@ body > main {
   background: var(--creamy-1);
 }
 
+.background-brown {
+  background: var(--brown-2);
+}
+
 .text-creamy {
   color: var(--creamy-1);
 }
