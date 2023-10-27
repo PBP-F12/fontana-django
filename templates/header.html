@@ -5,9 +5,11 @@
 		<a href="">Events</a>
 		{% if role == 'READER' %}
 		<a href="">Bookmarks</a>
-		<a href="/forum">Forum</a>
 		{% elif role == 'AUTHOR' %}
 		<a href="/book/author">My Books</a>
+		{% endif %}
+		{% if role == 'READER' or role == 'AUTHOR' %}
+		<a href="/forum">Forum</a>
 		{% endif %}
 		<a href="{% url 'auths:logout' %}">Log Out</a>
 	</nav>

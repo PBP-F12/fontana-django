@@ -12,7 +12,7 @@ from .forms import ForumForm, ForumReplyForm
 @login_required(login_url=reverse_lazy('auths:login'))
 def create_forum(request):
     # check if user role is READER
-    if request.user.role != 'READER':
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
         return HttpResponseForbidden('FORBIDDEN')
 
     # create forum form
@@ -33,7 +33,7 @@ def create_forum(request):
 @login_required(login_url=reverse_lazy('auths:login'))
 def display_all_forum(request):
     # return forbidden if user role is not READER
-    if request.user.role != 'READER':
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
         return HttpResponseForbidden('FORBIDDEN')
 
     # get all forums from db
@@ -46,7 +46,7 @@ def display_all_forum(request):
 
 @login_required(login_url=reverse_lazy('auths:login'))
 def display_forum_by_id(request, forum_id):
-    if request.user.role != 'READER':
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
         return HttpResponseForbidden('FORBIDDEN')
 
     forum = Forum.objects.get(pk=forum_id)
