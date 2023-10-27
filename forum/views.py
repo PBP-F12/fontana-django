@@ -26,7 +26,7 @@ def create_forum(request):
 
         return HttpResponseRedirect(reverse('forum:display_all_forum'))
 
-    context = {'form': form}
+    context = {'form': form, 'role': request.user.role}
     return render(request, "create_forum.html", context)
 
 
@@ -58,8 +58,11 @@ def display_forum_by_id(request, forum_id):
         reply = reply_form.save(commit=False)
         reply.commentor_id = request.user
         reply.forum_id = forum
+        forum.num_comments += 1
+        forum.save()
         reply.save()
         # replies = ForumReply.objects.filter(forum_id=forum_id)
 
-    context = {'forum': forum, 'replies': replies, 'reply_form': reply_form}
+    context = {'forum': forum, 'replies': replies,
+               'reply_form': reply_form, 'role': request.user.role}
     return render(request, 'forum_details.html', context)
