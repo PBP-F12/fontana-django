@@ -1,19 +1,6 @@
 {% extends 'main.html' %}
 {% block main_content %}
-<div class="mt-20">
+<div class="mt-12">
 	<h1 class="font-young-serif text-4xl">Create Form</h1>
-
-	<form method="POST">
-		{% csrf_token %}
-		<table>
-			{{ form.as_table }}
-			<tr>
-				<td></td>
-				<td>
-					<input type="submit" value="Create Forum" />
-				</td>
-			</tr>
-		</table>
-	</form>
 </div>
 {% endblock main_content %}
