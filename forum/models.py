@@ -14,6 +14,7 @@ class Forum(models.Model):
     forum_creator_id = models.ForeignKey(Reader, on_delete=models.CASCADE)
 
     forum_title = models.CharField(max_length=256)
+    forum_discussion = models.TextField(null=True)
     book_topic = models.ForeignKey(Book, on_delete=models.CASCADE)
 
     num_comments = models.IntegerField(default=0, editable=False)
