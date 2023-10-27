@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib import messages
+from django.core import serializers
+
+from .models import User
 from .forms import AuthorRegistrationForm, ReaderRegistrationForm
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
