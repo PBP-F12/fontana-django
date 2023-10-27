@@ -40,7 +40,7 @@ def display_all_forum(request):
     forums = Forum.objects.all()
     print(forums)
 
-    context = {'forums': forums}
+    context = {'forums': forums, 'role': request.user.role}
     return render(request, 'all_forums.html', context)
 
 
