@@ -18,16 +18,16 @@
 				Forum</a>
 		</div>
 	</div>
-	<div>
+	<div class="flex flex-col gap-4">
 		{% for forum in forums %}
 		<a href="{% url 'forum:display_forum_by_id' forum.forum_id %}" class="block flex gap-4 glassmorphism w-full p-5">
 			<img src="{{forum.book_topic.book_cover_link}}" class="h-[300px] rounded-[10px]">
 			<div>
 				<h2 class="font-young-serif text-2xl">{{ forum.forum_title }}</h2>
-				<div class="flex gap-2">
+				<div class="flex gap-2 items-center">
 					<p>Created by <span class="text-brown">{{ forum.forum_creator_id }}</span></p>
 					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
-					<p>Book {{ forum.book_topic.book_title }}</p>
+					<p class="max-w-[300px]">Book {{ forum.book_topic.book_title }}</p>
 					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
 					<p>{{ forum.num_comments }} comments</p>
 				</div>

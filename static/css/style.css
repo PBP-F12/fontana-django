@@ -19,8 +19,12 @@ body > main {
   min-height: 100%;
 }
 
+.background-white-creamy {
+  background: var(--creamy-0);
+}
+
 .background-creamy {
-  background: var(--creamy-1);
+  background: var(--creamy-1) !important;
 }
 
 .background-brown {
@@ -102,7 +106,9 @@ footer {
   z-index: 0;
 }
 
-.glassmorphism {
+.glassmorphism,
+select,
+option {
   background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
@@ -116,6 +122,17 @@ footer {
   border-radius: 10px;
   backdrop-filter: blur(20px); /* Apply a blur effect to the background */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+select,
+option {
+  padding: 8px 4px !important;
+  width: 100%;
+}
+
+textarea {
+  resize: none !important;
+  height: 180px;
 }
 
 .explore-card-book {
