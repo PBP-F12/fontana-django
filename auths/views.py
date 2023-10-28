@@ -66,6 +66,6 @@ def logout_user(request):
 
 
 def get_user_by_id(request, user_id):
-    user = User.objects.get(pk=user_id)
+    user = User.objects.filter(pk=user_id)
 
     return HttpResponse(serializers.serialize("json", user), content_type="application/json")
