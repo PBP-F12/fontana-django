@@ -25,4 +25,5 @@ urlpatterns = [
     path('forum/', include(('forum.urls', 'forum'), namespace='forum')),
     path('bookmark/', include(('bookmark.urls', 'bookmark'), namespace='bookmark')),
     path('event/', include(('event.urls', 'event'), namespace='event')),
+    path('details/', include(('review.urls', 'review'), namespace='review')),
 ]
