@@ -22,5 +22,6 @@ urlpatterns = [
     path('', include(('main.urls', 'main'), namespace='main')),
     path('auth/', include(('auths.urls', 'auths'), namespace='auths')),
     path('book/', include(('publish.urls', 'publish'), namespace='publish')),
-    path('forum/', include(('forum.urls', 'forum'), namespace='forum'))
+    path('forum/', include(('forum.urls', 'forum'), namespace='forum')),
+    path('details/', include(('review.urls', 'review'), namespace='review')),
 ]

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'main',
     'auths',
     'publish',
-    'forum'
+    'forum',
+    'review',
 ]
 
 MIDDLEWARE = [

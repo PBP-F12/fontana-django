@@ -144,6 +144,29 @@ footer {
   border-radius: 10px;
 }
 
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--brown-1);
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.glass-button:active {
+  transform: translateY(1px);
+}
+
 #top-card-book-container {
   /* Hide both vertical and horizontal scrollbars in Firefox */
   scrollbar-width: none;
