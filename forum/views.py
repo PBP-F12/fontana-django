@@ -79,8 +79,6 @@ def display_all_forums_ajax(request):
     json_response = []
 
     for forum in forums:
-        print(forum)
-
         forum_json = {
             'forumDetailLink': f'/forum/{forum.forum_id}',
             'forumTitle': forum.forum_title,
@@ -99,3 +97,34 @@ def display_all_forums_ajax(request):
     # forums = Forum.objects.all()
 
     # return HttpResponse(serializers.serialize("json", forums), content_type="application/json")
+
+
+@login_required(login_url=reverse_lazy('auths:login'))
+def display_forum_by_id_ajax(request, forum_id):
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+        return HttpResponseForbidden('FORBIDDEN')
+
+    forum = Forum.objects.get(pk=forum_id)
+    replies = ForumReply.objects.filter(forum_id=forum_id)
+
+    reply_list_json = []
+
+    for reply in replies:
+        reply_list_json.append({
+            'username': reply.commentor_id.username,
+            'comment': reply.text
+        })
+
+    json_response = {
+        'forumTitle': forum.forum_title,
+        'book': {
+            'cover': forum.book_topic.book_cover_link,
+            'title': forum.book_topic.book_title
+        },
+        'creatorUsername': forum.forum_creator_id.username,
+        'forumDiscussion': forum.forum_discussion,
+        'numberOfComments': forum.num_comments,
+        'replies': reply_list_json
+    }
+
+    return JsonResponse({'forum': json_response})

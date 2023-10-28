@@ -2,26 +2,11 @@
 {% load static %}
 {% block main_content %}
 <div class="w-[85%] mx-auto mt-[100px]">
-	<div class="flex gap-4">
-		<img src="{{forum.book_topic.book_cover_link}}" class="rounded-[20px]">
-		<div class="flex flex-col gap-8">
-			<div class="flex flex-col gap-1">
-				<h1 class="font-young-serif text-4xl">{{ forum.forum_title }}</h1>
-				<div class="flex gap-2">
-					<p>Created by <span class="text-brown">{{ forum.forum_creator_id }}</span></p>
-					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
-					<p>Book {{ forum.book_topic.book_title }}</p>
-				</div>
-			</div>
-			<div>
-				<h2 class="font-young-serif text-xl">Discussion</h2>
-				<p>{{ forum.forum_discussion }}</p>
-			</div>
-		</div>
+	<div id="forum-details-container" class="flex gap-4">
 	</div>
 
 	<div class="mt-8">
-		<h2 class="font-young-serif text-2xl">Comments ({{ forum.num_comments }})</h2>
+		<h2 id="num-comments" class="font-young-serif text-2xl"></h2>
 
 		<form method="POST" class="flex flex-row gap-2 mx-auto justify-center items-center w-full">
 			{% csrf_token %}
@@ -33,13 +18,65 @@
 		</form>
 
 		<div id="replies-container" class="mt-4 flex flex-col gap-3">
-			{% for reply in replies %}
-			<div class="glassmorphism p-3">
-				<h4 class="font-young-serif text-xl">{{reply.commentor_id.username}}</h4>
-				<p>{{reply.text}}</p>
-			</div>
-			{% endfor %}
 		</div>
 	</div>
 </div>
 {% endblock main_content %}
+{% block script %}
+<script defer>
+	// console.log("{% url 'forum:display_forum_by_id_ajax' forum.forum_id %}");
+	const getForumDetails = async () => {
+		const response = await fetch("{% url 'forum:display_forum_by_id_ajax' forum.forum_id %}")
+		const forum = await response.json()
+		console.log(forum.forum);
+		return forum.forum
+	}
+
+	const refresh = async () => {
+		const forum = await getForumDetails()
+		const replies = forum.replies
+
+		const forumDetails = document.querySelector('#forum-details-container')
+		const numOfCommentsHeading = document.querySelector('#num-comments')
+		const repliesContainer = document.querySelector('#replies-container')
+
+		// console.log(forumDetails);
+		// console.log(numOfCommentsHeading);
+		// console.log(repliesContainer);
+
+		forumDetails.innerHTML = `
+		<img src="${forum.book.cover}" class="rounded-[20px]">
+		<div class="flex flex-col gap-8">
+			<div class="flex flex-col gap-1">
+				<h1 class="font-young-serif text-4xl">${forum.forumTitle}</h1>
+				<div class="flex gap-2">
+					<p>Created by <span class="text-brown">${forum.creatorUsername}</span></p>
+					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
+					<p>Book ${forum.book.title}</p>
+				</div>
+			</div>
+			<div>
+				<h2 class="font-young-serif text-xl">Discussion</h2>
+				<p>${forum.forumDiscussion}</p>
+			</div>
+		</div>
+		`
+
+		numOfCommentsHeading.innerHTML = `Comments (${forum.numberOfComments})`
+
+		let repliesContainerString = ''
+		replies.forEach(reply => {
+			repliesContainerString += `
+			<div class="glassmorphism p-3">
+				<h4 class="font-young-serif text-xl">${reply.username}</h4>
+				<p>${reply.comment}</p>
+			</div>
+			`
+		})
+
+		repliesContainer.innerHTML = repliesContainerString
+	}
+
+	refresh()
+</script>
+{% endblock script %}
