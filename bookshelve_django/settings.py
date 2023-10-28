@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'auths',
     'publish',
     'forum',
+    'review',
     'bookmark'
 ]
 
