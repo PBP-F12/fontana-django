@@ -18,22 +18,53 @@
 				Forum</a>
 		</div>
 	</div>
-	<div class="flex flex-col gap-4">
-		{% for forum in forums %}
-		<a href="{% url 'forum:display_forum_by_id' forum.forum_id %}" class="block flex gap-4 glassmorphism w-full p-5">
-			<img src="{{forum.book_topic.book_cover_link}}" class="h-[300px] rounded-[10px]">
-			<div>
-				<h2 class="font-young-serif text-2xl">{{ forum.forum_title }}</h2>
-				<div class="flex gap-2 items-center">
-					<p>Created by <span class="text-brown">{{ forum.forum_creator_id }}</span></p>
-					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
-					<p class="max-w-[300px]">Book {{ forum.book_topic.book_title }}</p>
-					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
-					<p>{{ forum.num_comments }} comments</p>
-				</div>
-			</div>
-		</a>
-		{% endfor %}
+	<div id="forums-container" class="flex flex-col gap-4">
 	</div>
 </div>
 {% endblock main_content %}
+{% block script %}
+<script defer>
+	const getAllForums = async () => {
+		const response = await fetch('/forum/ajax')
+		const forums = await response.json()
+		return forums.forums
+	}
+
+	// const getUserData = async (userId) => {
+	// 	const response = await fetch(`/auth/user/${userId}`)
+	// 	const user = await response.json()
+	// 	return user
+	// }
+
+	const refreshForumCards = async () => {
+		const forumsContainer = document.querySelector('#forums-container')
+		const forums = await getAllForums()
+
+		let forumCards = ''
+		forums.forEach(async (forum) => {
+			console.log(forum);
+			// console.log('user');
+			// console.log(user);
+			forumCards += `
+			<a href="${forum.forumDetailLink}" class="block flex gap-4 glassmorphism w-full p-5">
+				<img src="${forum.book.cover}" class="h-[300px] rounded-[10px]">
+				<div>
+					<h2 class="font-young-serif text-2xl">${forum.forumTitle}</h2>
+					<div class="flex gap-2 items-center">
+						<p>Created by <span class="text-brown">${forum.creatorUsername}</span></p>
+						<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
+						<p class="max-w-[300px]">Book ${forum.book.title}</p>
+						<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
+						<p>${forum.numberOfComments} comments</p>
+					</div>
+				</div>
+			</a>
+			`
+		})
+
+		forumsContainer.innerHTML = forumCards
+	}
+
+	refreshForumCards()
+</script>
+{% endblock script %}
