@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 
 from .models import Forum, ForumReply
 from .forms import ForumForm, ForumReplyForm
@@ -66,3 +67,35 @@ def display_forum_by_id(request, forum_id):
     context = {'forum': forum, 'replies': replies,
                'reply_form': reply_form, 'role': request.user.role}
     return render(request, 'forum_details.html', context)
+
+
+@login_required(login_url=reverse_lazy('auths:login'))
+def display_all_forums_ajax(request):
+    print(request.user.role)
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+        return HttpResponseForbidden('FORBIDDEN')
+
+    forums = Forum.objects.all()
+    json_response = []
+
+    for forum in forums:
+        print(forum)
+
+        forum_json = {
+            'forumDetailLink': f'/forum/{forum.forum_id}',
+            'forumTitle': forum.forum_title,
+            'book': {
+                'cover': forum.book_topic.book_cover_link,
+                'title': forum.book_topic.book_title
+            },
+            'creatorUsername': forum.forum_creator_id.username,
+            'numberOfComments': forum.num_comments
+        }
+
+        json_response.append(forum_json)
+
+    return JsonResponse({'forums': json_response})
+
+    # forums = Forum.objects.all()
+
+    # return HttpResponse(serializers.serialize("json", forums), content_type="application/json")
