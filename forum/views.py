@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Forum, ForumReply
 from .forms import ForumForm, ForumReplyForm
@@ -128,3 +129,25 @@ def display_forum_by_id_ajax(request, forum_id):
     }
 
     return JsonResponse({'forum': json_response})
+
+
+@login_required(login_url=reverse_lazy('auths:login'))
+def add_reply_to_forum_ajax(request, forum_id):
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+        return HttpResponseForbidden('FORBIDDEN')
+
+    if request.method == 'POST':
+        comment = request.POST.get('comment')
+
+        try:
+            forum = Forum.objects.get(forum_id=forum_id)
+
+            forum_reply = ForumReply(
+                commentor_id=request.user, forum_id=forum, text=comment)
+            forum_reply.save()
+            return JsonResponse({'msg': 'Success!', 'reply': {'username': request.user.username, 'comment': comment}})
+        except ObjectDoesNotExist:
+            return Http404('NOT FOUND')
+
+    else:
+        return JsonResponse({'msg': 'BAD REQUEST'}, status=400)
