@@ -1,26 +1,68 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<title>My Books</title>
+{% endblock meta %}
+
 {% block content %}
-<h1>Your Books</h1>
-<table>
-	<thead>
-		<td>Title</td>
-		<td>Image Cover</td>
-		<td>Rating</td>
-	</thead>
-	<tbody>
-		{% for book in books %}
-		<tr>
-			<td>{{ book.book_title }}</td>
-			<td>
-				{% if book.image_file == null %}
-				<img src="{{ book.image_file }}" alt="">
-				{% else %}
-				<img src="{{ book.image_link }}" alt="">
-				{% endif %}
-			</td>
-			<td>{{ book.avg_rating }}</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+{% include 'header.html' %}
+
+<section>
+	
+	<div class="h-[400px]">
+		<img id="main-picture" src="{% static 'img/fountain_pen_bg.jpg' %}" alt="fountain pen background" class="w-full h-[400px]">
+		<div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
+		<div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
+			<h1 class="font-young-serif text-white-creamy text-5xl drop-shadow-2xl">Your Book</h1>
+		</div>
+	</div>
+	<!-- <table>
+		<thead>
+			<td>Title</td>
+			<td>Image Cover</td>
+			<td>Rating</td>
+		</thead>
+		<tbody>
+			{% for book in books %}
+			<tr>
+				<td>{{ book.book_title }}</td>
+				<td>
+					{% if book.book_cover_file %}
+					<img src="{{ book.book_cover_file }}" alt="">
+					{% else %}
+					<img src="{{ book.book_cover_link }}" alt="">
+					{% endif %}
+				</td>
+				<td>{{ book.avg_rating }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table> -->
+	<div id="html_string"></div>
+</section>
+
+<script>
+	const card = (book) =>
+            `\n<div>
+				${book.fields.book_title}
+            </div>`
+
+	async function loadBook() {
+		const books = await fetch("{% url 'publish:get_book_by_author_json' %}").then((book) => book.json())
+		let htmlString = ""
+		console.log(books)
+		books.forEach((item) => {
+			console.log(item)
+			htmlString += card(item)
+		})
+
+		document.getElementById("html_string").innerHTML = htmlString
+	}
+	// Call loadBook function when the document is ready
+    document.addEventListener("DOMContentLoaded", loadBook);
+</script>
+
+{% include 'footer.html' %}
 {% endblock content %}

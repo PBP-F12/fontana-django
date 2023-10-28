@@ -23,5 +23,6 @@ urlpatterns = [
     path('auth/', include(('auths.urls', 'auths'), namespace='auths')),
     path('book/', include(('publish.urls', 'publish'), namespace='publish')),
     path('forum/', include(('forum.urls', 'forum'), namespace='forum')),
-    path('event/', include(('event.urls', 'event'), namespace='event'))
+    path('bookmark/', include(('bookmark.urls', 'bookmark'), namespace='bookmark')),
+    path('event/', include(('event.urls', 'event'), namespace='event')),
 ]
