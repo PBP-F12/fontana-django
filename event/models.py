@@ -12,6 +12,7 @@ class Event(models.Model):
 
     event_name = models.CharField(max_length=256)
     description = models.TextField()
+    location = models.CharField(max_length=1024, blank=True, null=True)
     poster_link = models.CharField(max_length=1024, blank=True, null=True)
     event_date = models.DateField(null=True)
     date = models.DateField(auto_now_add=True)

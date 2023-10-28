@@ -1,60 +1,50 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>Fontana Events</h1>
-<!-- <table>
-    <tr>
-        <th>Name</th>
-        <th>Poster Link</th>
-        <th>Date Added</th>
-        <th>Date Event</th>
-        <th>Author</th>
-    </tr>
+{% extends 'main.html' %}
+{% load static %}
+{% block main_content %}
 
-    {% for event in events %}
-        <tr>
-            <td><a href="{% url 'event:get_event_details' event.event_id %}">{{event.event_name}}</a></td>
-            <td>{{event.poster_link}}</td>
-            <td>{{event.date}}</td>
-            <td>{{event.event_date}}</td>
-            <td>{{event.book_id.author_id.username}}</td>
-        </tr>
-    {% endfor %}
-</table> -->
+<style>
+    .container {
+        margin-top: 40px;
+    }
+    .add-event-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+    }
+</style>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    {% for event in events %}
-        <div class="max-w-sm rounded overflow-hidden shadow-lg bg-white">
-            <img class="w-full h-48 object-cover" src="{{ event.poster_link }}" alt="{{ event.event_name }}">
-            <div class="px-6 py-4">
-                <a href="{% url 'event:get_event_details' event.event_id %}" class="font-bold text-xl mb-2 block">{{ event.event_name }}</a>
-                <p class="text-gray-600">Event Date: {{ event.event_date }}</p>
-                <p class="text-gray-600">Author: {{ event.book_id.author_id.username }}</p>
-            </div>
-        </div>
-    {% endfor %}
+<div class="h-[400px]">
+    <img id="main-picture" src="{% static 'img/book-event-image.jpg' %}" alt="book event image" class="w-full h-[400px]">
+    <div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
+    <div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
+        <h1 class="font-young-serif text-creamy text-5xl drop-shadow-2xl">Events</h1>
+        <p class="text-creamy">Unleash The Stories; Share and Connect.</p>
+    </div>
 </div>
 
-<!-- <div class="row">
-    {% for event in events %}
-        <div class="col-md-3 mb-4">
-            <div class="card-body">
-                <h5 class="card-title">{{event.event_name}}</h5>
-                <p class="card-text">Event Date: {{ event.event_date }}</p>
-                <p class="card-text">Date Added: {{item.date_added}}</p>
+<div class="container mx-auto">
+        {% for event in events %}
+            <div style="width: 95%; margin: 0 auto; margin-bottom: 10px;" class="mx-auto rounded-full overflow-hidden shadow-lg mb-4 flex p-4 border">
+                <img class="w-16 h-16 object-cover rounded-full" style="margin-left: 10px" src="{{ event.poster_link }}" alt="{{ event.event_name }}">
+                <div class="flex-1 ml-4">
+                    <a href="{% url 'event:get_event_details' event.event_id %}" class="font-bold text-xl text-#765827 mb-2 block">{{ event.event_name }}</a>
+                    <p class="text-gray-600 flex items-center">
+                        <svg class="w-4 h-4 mr-2 fill-current text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M16 2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1V0h2v2h6V0h2v2h1zM4 8V6h12v2H4zm0 3v2h12v-2H4zm0 3v2h7v-2H4z"/>
+                        </svg>
+                        {{ event.event_date }}
+                    </p>
+                </div>
             </div>
-        </div>
-        {% if forloop.counter|divisibleby:4 and not forloop.last %}
-            </div><div class="row">
-        {% endif %}
-    {% endfor %}
-</div> -->
+        {% endfor %}
+</div>
 
 <br />
 
-<a href="{% url 'event:publish_event' %}">
-    <button>
-        Publish Event
+<a href="{% url 'event:publish_event' %}" class="add-event-button">
+    <button class="background-creamy hover:bg-opacity-50 text-white font-bold py-2 px-4 rounded-full">
+        +
     </button>
 </a>
 
-{% endblock content %}
+{% endblock main_content %}
