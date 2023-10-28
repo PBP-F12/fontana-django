@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*', 'fontana.my.id']
 
+CSRF_TRUSTED_ORIGINS = ['https://fontana.my.id']
+
 
 # Application definition
 
