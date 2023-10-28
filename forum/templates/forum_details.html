@@ -1,28 +1,114 @@
 {% extends 'main.html' %}
+{% load static %}
 {% block main_content %}
-<h1>Forum Title: {{ forum.forum_title }}</h1>
+<div class="w-[85%] mx-auto mt-[100px]">
+	<div id="forum-details-container" class="flex gap-4">
+	</div>
 
-<div>
-	<h3>Replies</h3>
-	<form method="POST">
-		{% csrf_token %}
-		<table>
-			{{ reply_form.as_table }}
-			<tr>
-				<td></td>
-				<td>
-					<input type="submit" value="Send comment" />
-				</td>
-			</tr>
-		</table>
-	</form>
-	<div>
-		{% for reply in replies %}
-		<div>
-			<h4>{{reply.commentor_id.username}}</h4>
-			<p>{{reply.text}}</p>
+	<div class="mt-8">
+		<h2 id="num-comments" class="font-young-serif text-2xl"></h2>
+
+		<div class="flex flex-row gap-2 mx-auto justify-center items-center w-full">
+			{% csrf_token %}
+			<input id="comment-input" type="text" placeholder="Reply..."
+				class="h-fit p-2 w-[50%] max-h-[500px] glassmorphism text-white-creamy">
+			<button onclick="sendComments()">
+				<img src="{% static 'icon/send_icon.svg' %}" class="background-creamy w-fit h-fit rounded-full p-2 w-[40px]">
+			</button>
 		</div>
-		{% endfor %}
+
+		<div id="replies-container" class="mt-4 flex flex-col gap-3">
+		</div>
 	</div>
 </div>
 {% endblock main_content %}
+{% block script %}
+<script defer>
+	// console.log("{% url 'forum:display_forum_by_id_ajax' forum.forum_id %}");
+	const replyElement = (reply) => {
+		return `
+		<div class="glassmorphism p-3">
+			<h4 class="font-young-serif text-xl">${reply.username}</h4>
+			<p>${reply.comment}</p>
+		</div>
+		`
+	}
+
+	const getForumDetails = async () => {
+		const response = await fetch("{% url 'forum:display_forum_by_id_ajax' forum.forum_id %}")
+		const forum = await response.json()
+		console.log(forum.forum);
+		return forum.forum
+	}
+
+	const refresh = async () => {
+		const forum = await getForumDetails()
+		const replies = forum.replies
+
+		const forumDetails = document.querySelector('#forum-details-container')
+		const numOfCommentsHeading = document.querySelector('#num-comments')
+		const repliesContainer = document.querySelector('#replies-container')
+
+		// console.log(forumDetails);
+		// console.log(numOfCommentsHeading);
+		// console.log(repliesContainer);
+
+		forumDetails.innerHTML = `
+		<img src="${forum.book.cover}" class="rounded-[20px]">
+		<div class="flex flex-col gap-8">
+			<div class="flex flex-col gap-1">
+				<h1 class="font-young-serif text-4xl">${forum.forumTitle}</h1>
+				<div class="flex gap-2">
+					<p>Created by <span class="text-brown">${forum.creatorUsername}</span></p>
+					<img src="{% static 'icon/dot-single.svg' %}" class="w-[25px]">
+					<p>Book ${forum.book.title}</p>
+				</div>
+			</div>
+			<div>
+				<h2 class="font-young-serif text-xl">Discussion</h2>
+				<p>${forum.forumDiscussion}</p>
+			</div>
+		</div>
+		`
+
+		numOfCommentsHeading.innerHTML = `Comments (${forum.numberOfComments})`
+
+		let repliesContainerString = ''
+		replies.forEach(reply => {
+			repliesContainerString += replyElement(reply)
+		})
+
+		repliesContainer.innerHTML = repliesContainerString
+	}
+
+	const sendComments = async () => {
+		const newComment = document.querySelector('#comment-input')
+		const repliesContainer = document.querySelector('#replies-container')
+		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		console.log(newComment.value);
+
+		const form = new FormData()
+		form.append('comment', newComment.value)
+
+		const options = {
+			method: 'POST',
+			headers: {
+				'X-CSRFToken': csrftoken
+			},
+			body: form
+		}
+
+		const response = await fetch("{% url 'forum:add_reply_to_forum_ajax' forum.forum_id %}", options)
+		if (!response.ok) {
+			alert('Error: failed to submit comment')
+		} else {
+			const responseJson = await response.json()
+			const reply = responseJson.reply
+			repliesContainer.innerHTML += replyElement(reply)
+		}
+		console.log(request);
+	}
+
+	refresh()
+</script>
+{% endblock script %}

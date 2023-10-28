@@ -2,7 +2,7 @@ from django.db import models
 import uuid
 from main.models import Book
 from django.utils import timezone
-from auths.models import Reader
+from auths.models import Author, Reader, User
 
 # Create your models here.
 
@@ -11,7 +11,7 @@ class Forum(models.Model):
     forum_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
-    forum_creator_id = models.ForeignKey(Reader, on_delete=models.CASCADE)
+    forum_creator_id = models.ForeignKey(User, on_delete=models.CASCADE)
 
     forum_title = models.CharField(max_length=256)
     forum_discussion = models.TextField(null=True)
@@ -23,7 +23,8 @@ class Forum(models.Model):
 class ForumReply(models.Model):
     reply_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    commentor_id = models.ForeignKey(Reader, on_delete=models.CASCADE)
+    commentor_id = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True)
     forum_id = models.ForeignKey(Forum, on_delete=models.CASCADE)
 
     text = models.TextField()

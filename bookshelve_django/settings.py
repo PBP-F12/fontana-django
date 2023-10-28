@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-ziz&$s7_dac60&!j62e!25k^*^p!^6g-j2*ax&_av0i1bgl8(&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'fontana.my.id']
+
+CSRF_TRUSTED_ORIGINS = ['https://fontana.my.id']
 
 
 # Application definition
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
     'auths',
     'publish',
     'forum',
+    'bookmark',
+    'event',
+    'review',
     'bookmark'
 ]
 

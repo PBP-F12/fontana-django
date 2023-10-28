@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib import messages
+from django.core import serializers
+
+from .models import User
 from .forms import AuthorRegistrationForm, ReaderRegistrationForm
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
@@ -60,3 +63,9 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('auths:login')
+
+
+def get_user_by_id(request, user_id):
+    user = User.objects.filter(pk=user_id)
+
+    return HttpResponse(serializers.serialize("json", user), content_type="application/json")
