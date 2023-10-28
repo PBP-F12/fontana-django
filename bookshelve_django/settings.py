@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'bookmark',
     'event',
     'review',
-    'bookmark'
 ]
 
 MIDDLEWARE = [
