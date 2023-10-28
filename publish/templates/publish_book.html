@@ -1,17 +1,75 @@
 {% extends 'base.html' %}
-{% block content %}
-<h1>Publish Book</h1>
 
-<form method="POST">
-	{% csrf_token %}
-	<table>
-		{{ form.as_table }}
-		<tr>
-			<td></td>
-			<td>
-				<input type="submit" value="Publish" />
-			</td>
-		</tr>
-	</table>
-</form>
+{% load static %}
+
+{% block meta %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<title>Publish Book</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'header.html' %}
+<div class="h-[400px]">
+	<img id="main-picture" src="{% static 'img/fountain_pen_bg.jpg' %}" alt="fountain pen background" class="w-full h-[400px]">
+	<div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
+	<div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
+		<h1 class="font-young-serif text-white-creamy text-5xl drop-shadow-2xl">Publish Your Book</h1>
+		<span class="text-white-creamy italic">Share your story</span>
+	</div>
+</div>
+
+<div class="flex justify-center items-center h-screen w-screen flex-col">
+
+	<form id="form" method="POST">
+
+		<div class="glassmorphism shadow-2xl container mx-auto my-4 px-4 lg:px-20 z-0">
+
+			{% csrf_token %}
+			<div class="w-full p-8 my-4 md:px-12 lg:w-9/12 lg:pl-20 lg:pr-40 mr-auto rounded-2xl">
+				
+				<div class="flex">
+					<h2 class="font-bold uppercase text-5xl mb-5">First Things First..</h2>
+				</div>
+
+				<div class="grid grid-cols-1">
+					<label for="book_title" class="block font-bold mt-5">Book Title*</label>
+					<input id="book_title" name="book_title" class="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
+					type="text" placeholder="Insert your book title" />
+
+					<label for="Description" class="block font-bold mt-5">Description*</label>
+					<textarea id="description" name="description" class="w-full h-32 bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline" placeholder="Give a brief description of your story"></textarea>
+					
+					<label for="book_cover_link" class="block font-bold mt-5">Book Cover Link*</label>
+					<input id="book_cover_link" name="book_cover_link" class="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
+					type="url" placeholder="Insert your book cover link (URL)" />
+					
+					<label for="book_cover_file" class="block font-bold mt-5">Book Cover File (optional)</label>
+					<input id="book_cover_file" name="book_cover_file" class="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
+					type="file" />
+				</div>
+
+				<div class="mt-5 my-2 w-1/2 lg:w-1/4">
+					<button onclick=onSubmit() class="uppercase text-sm font-bold tracking-wide bg-amber-950 text-gray-100 p-3 rounded-lg w-full">
+						Publish
+					</button>
+				</div>
+
+			</div>
+
+		</div>
+		
+	</form>
+
+</div>
+
+<script>
+	async function onSubmit() {
+		await fetch("{% url 'publish:publish_book' %}", {
+			method: "POST",
+			body: new BookForm(document.querySelector('#form'))
+		})
+	}
+</script>
+
+{% include 'footer.html' %}
 {% endblock content %}

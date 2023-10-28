@@ -24,4 +24,5 @@ urlpatterns = [
     path('book/', include(('publish.urls', 'publish'), namespace='publish')),
     path('forum/', include(('forum.urls', 'forum'), namespace='forum')),
     path('details/', include(('review.urls', 'review'), namespace='review')),
+    path('bookmark/', include(('bookmark.urls', 'bookmark'), namespace='bookmark'))
 ]
