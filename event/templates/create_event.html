@@ -1,18 +1,50 @@
 {% extends 'main.html' %}
 {% block main_content %}
+<div class="mt-[100px] w-[85%] max-w-[1200px] mx-auto flex flex-col gap-3">
+	<h1 class="font-young-serif text-4xl" style="margin-top: 50px;">Publish Event</h1>
 
-<div style="margin-top: 100px;">
-	<form method="POST">
+	<form id="form" method="POST" class="flex gap-4">
 		{% csrf_token %}
-		<table>
-			{{ form.as_table }}
-			<tr>
-				<td></td>
-				<td>
-					<input type="submit" value="Create Event" />
-				</td>
-			</tr>
-		</table>
+
+		<!-- Left Section: Event Name, Description, Poster Link -->
+		<div class="flex-1 flex flex-col gap-2">
+			<label>Event Name</label>
+			<input name="event_name" type="text" class="glassmorphism w-full p-2 py-1">
+
+			<label>Location</label>
+			<input name="location" type="text" class="glassmorphism w-full p-2 py-1">
+
+			<label>Event Date</label>
+			<input name="event_date" type="date" class="glassmorphism w-full p-2 py-1">
+			
+			<br/>
+			<div>
+				<button onclick=onSubmit() class="background-creamy text-brown px-2 py-1">Publish Event</button>
+			</div>
+		</div>
+
+		<!-- Right Section: Location, Event Date, Book -->
+		<div class="flex-1 flex flex-col gap-2">
+			<label>Description</label>
+			<input name="description" type="text" class="glassmorphism w-full p-2 py-1">
+
+			<label>Poster Link</label>
+			<input name="poster_link" type="text" class="glassmorphism w-full p-2 py-1">
+
+			<label>Book</label>
+			{{ form.book_id }}
+		</div>
 	</form>
 </div>
 {% endblock main_content %}
+
+{% block script %}
+<script>
+	async function onSubmit() {
+		await fetch("{%url 'event:publish_event'}", {
+			method: "POST",
+			body: new FormData(document.querySelector('#form'))
+		})
+	}
+</script>
+{% endblock script %}
