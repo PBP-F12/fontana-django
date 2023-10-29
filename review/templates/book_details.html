@@ -16,6 +16,14 @@
             background-position: center;
             background-size: 110%;
         }
+
+        .custom-font {
+            font-family: 'Young Serif', serif;
+        }
+
+        .desc-font {
+            font-family: 'Georgia', serif;
+        }
     </style>
 {% endblock %}
 
@@ -49,8 +57,8 @@
                     <div>
                         <div class="description" style="max-height: 100px; overflow: hidden;">
                             <p><strong>Description:</strong></p>
-                            <div class="text-brown">
-                                <p>{{ book.description }}</p>
+                            <div class="desc-font text-brown">
+                                <p style="font-size: 110%;">{{ book.description }}</p>
                             </div>
                         </div>
                         <a href="#" class="text-grey-500 hover:underline show-more">Show More</a>
@@ -64,9 +72,9 @@
 
         
         <div class="mt-20 glassmorphism p-6 rounded-lg shadow-lg relative" style="margin-left: 30px; margin-right: 30px; margin-bottom: 30px" >
-            <h1 class="text-2xl font-semibold text-brown mb-4 inline-block">Reviews:</h1>
+            <h1 class="custom-font text-2xl font-semibold text-brown mb-4 inline-block">Reviews:</h1>
             {% if user.is_authenticated and user.is_reader %}
-                <a href="{% url 'review:create_review' book.book_id %}" class="glass-button absolute top-0 right-0 mt-2 mr-6">Add Review</a>
+                <a href="{% url 'review:create_review' book.book_id %}" class=" font-young-serif glass-button absolute top-0 right-0 mt-2 mr-6">Add Review</a>
             {% endif %}
             <div id="reviews-container" class="glassmorphism">
                 <!-- Reviews will be loaded here -->
@@ -99,7 +107,7 @@
             const reviews = await getReviews();
             if (reviews.length === 0) {
                 const noReviewsMessage = document.createElement('div');
-                noReviewsMessage.classList.add('p-4', 'text-center', 'text-brown');
+                noReviewsMessage.classList.add('p-4', 'text-center', 'text-brown', 'font-young-serif');
                 noReviewsMessage.innerText = 'There are no reviews for this book yet';
                 reviewsContainer.appendChild(noReviewsMessage);
             } else {
@@ -111,7 +119,8 @@
                     var userSinglePK = parseInt(userSingle.pk);
 
                     const reviewContainer = document.createElement('div');
-                    reviewContainer.classList.add('p-4', 'border-b', 'border-gray-300', 'relative'); // Ensure this is relative
+                    reviewContainer.classList.add('p-4', 'border-b', 'relative'); // Ensure this is relative
+                    reviewContainer.style.borderColor = '#66461f94';
 
                     const reviewHeader = document.createElement('div');
                     reviewHeader.classList.add('flex', 'flex-row', 'items-start', 'mb-2', 'relative'); // Ensure this is relative
@@ -145,7 +154,10 @@
                     reviewContainer.appendChild(reviewHeader);
 
                     const reviewContent = document.createElement('p');
-                    reviewContent.classList.add('text-brown');
+                    reviewContent.classList.add('text-brown', 'desc-font');
+                    reviewContent.style.maxHeight = '200px';
+                    reviewContent.style.overflow = 'auto';
+                    reviewContent.style.fontSize = '110%';
                     reviewContent.innerText = review.fields.review_text;
 
                     reviewContainer.appendChild(reviewHeader);
