@@ -12,8 +12,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
-def book_details(request, book_title):
-    book = get_object_or_404(Book, book_title=book_title)
+def book_details(request, book_id):
+    print(book_id)
+    book = get_object_or_404(Book, book_id=book_id)
     return render(request, 'book_details.html', {'book': book})
 
 def show_mainbruh(request):
