@@ -16,6 +16,10 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=50, choices=Role.choices)
 
+    @property
+    def is_reader(self):
+        return self.role == self.Role.READER
+
     def save(self, *args, **kwargs):
         if not self.pk:  # if user doesn't have a primary key, or if user hasn't been created then...
             self.role = self.base_role
