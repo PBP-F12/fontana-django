@@ -17,7 +17,8 @@ def book_details(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
     context = {
         'book': book,
-        'userCurrent': request.user
+        'userCurrent': request.user,
+        'role': request.user.role,
     }
     return render(request, 'book_details.html', context)
 
