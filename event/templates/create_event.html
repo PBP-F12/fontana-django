@@ -3,7 +3,7 @@
 <div class="mt-[100px] w-[85%] max-w-[1200px] mx-auto flex flex-col gap-3">
 	<h1 class="font-young-serif text-4xl" style="margin-top: 50px;">Publish Event</h1>
 
-	<form method="POST" class="flex gap-4">
+	<form id="form" method="POST" class="flex gap-4">
 		{% csrf_token %}
 
 		<!-- Left Section: Event Name, Description, Poster Link -->
@@ -19,7 +19,7 @@
 			
 			<br/>
 			<div>
-				<button type="submit" class="background-creamy text-brown px-2 py-1">Publish Event</button>
+				<button onclick=onSubmit() class="background-creamy text-brown px-2 py-1">Publish Event</button>
 			</div>
 		</div>
 
@@ -37,3 +37,14 @@
 	</form>
 </div>
 {% endblock main_content %}
+
+{% block script %}
+<script>
+	async function onSubmit() {
+		await fetch("{%url 'event:publish_event'}", {
+			method: "POST",
+			body: new FormData(document.querySelector('#form'))
+		})
+	}
+</script>
+{% endblock script %}
