@@ -61,4 +61,5 @@ def get_book_by_author_json(request):
     # Get author's books
     books = Book.objects.filter(author_id=request.user.id)
 
+    # Create an HTTP response that contains the JSON representation of books
     return HttpResponse(serializers.serialize('json', books))
