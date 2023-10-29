@@ -157,7 +157,7 @@
 			imgBookmark.src = `{% static 'icon/bookmarked.svg' %}`
 			// console.log(imgBookmark.src);
 			// buttonBookmark.onclick = `deleteBookmark('${responseJson.bookmarkId}', '${bookId}')`
-			window.location.reload()
+			await refresh()
 		}
 	}
 
@@ -176,7 +176,7 @@
 			// buttonBookmark.addEventListener('click', (event) => {
 			// 	addBookmark(bookId)
 			// })
-			window.location.reload()
+			await refresh()
 		}
 	}
 

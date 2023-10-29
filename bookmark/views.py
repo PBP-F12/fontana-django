@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from main.models import Book
+from django.core import serializers
 
 # Create your views here.
 
@@ -48,9 +49,18 @@ def get_bookmark_by_user(request):
     return render(request, 'my_bookmark.html', context)
 
 
-def add_bookmark_ajax(request, book_id):
-    pass
+def get_bookmark_by_user_ajax(request):
+    bookmarks = Bookmark.objects.filter(user_id=request.user)
 
+    json_response = []
 
-def delete_bookmark_by_book_id_ajax(request, book_id):
-    pass
+    for bookmark in bookmarks:
+        json_response.append({
+            'bookmarkId': bookmark.bookmark_id,
+            'bookId': bookmark.book_id.book_id,
+            'bookCover': bookmark.book_id.book_cover_link,
+            'bookTitle': bookmark.book_id.book_title,
+            'authorUsername': bookmark.book_id.author_id.username
+        })
+
+    return JsonResponse({'bookmarks': json_response})
