@@ -24,29 +24,6 @@
 		<div id="top-card-book-container"
 			class="flex flex-row gap-6 justify-center overflow-x-scroll overflow-y-hidden pt-16">
 			{% for book in top_books %}
-			<a href="details/{{ book.book_title }}">
-				<div
-					style="background-image: url('{{ book.book_cover_link }}'); background-repeat: no-repeat; background-size: cover; object-fit: cover;"
-					class="rounded-[10px]">
-					<div class="top-card-book glassmorphism-full-transparent flex flex-row gap-2 h-[150px] p-2 pl-6">
-						<img src="{{ book.book_cover_link }}" class="h-[200px] relative top-[-70px]">
-						<div class="flex flex-col justify-around">
-							<div>
-								<h3 class="font-young-serif text-lg text-white-creamy">{{ book.book_title }}</h3>
-								<div class="flex items-center gap-2">
-									<p>{{ book.author_id.username }}</p>
-									<img src="{% static 'icon/dot-single.svg' %}" class="w-[20px]">
-									<div class="flex justify-center items-center">
-										<img src="{% static 'icon/rating_star.svg' %}" class="w-[20px]">
-										<p>{{ book.avg_rating }}/10</p>
-									</div>
-								</div>
-							</div>
-							<p>{{ book.description|slice:"0:50"|add:"..." }}</p>
-						</div>
-					</div>
-				</div>
-			</a>
 			{% endfor %}
 		</div>
 	</div>
@@ -64,30 +41,6 @@
 
 		<div id="explore-card-book-container" class="flex flex-row flex-wrap gap-6 justify-center">
 			{% for book in explore_books %}
-			<div class="flex flex-col">
-				<a href="details/{{ book.book_title }}">
-					<div class="explore-card-book flex flex-col gap-2">
-						<img src="{{ book.book_cover_link }}">
-	
-						<div class="max-w-[302px]">
-							{% if book.book_title|length > 30 %}
-							<h3 class="font-young-serif">{{ book.book_title|slice:"0:30"|add:"..." }}</h3>
-							{% else %}
-							<h3 class="font-young-serif">{{ book.book_title }}</h3>
-							{% endif %}
-	
-							<div class="flex items-center">
-								<p class="text-brown">{{ book.author_id.username }}</p>
-							</div>
-						</div>
-					</div>
-				</a>
-				<div>
-					<a href="{% url 'bookmark:add_bookmark' book.book_id %}">
-						<img src="{% static 'icon/not_bookmarked.svg' %}" class="w-[40px]">
-					</a>
-				</div>
-			</div>
 			{% endfor %}
 		</div>
 	</div>
@@ -96,3 +49,160 @@
 
 {% include 'footer.html' %}
 {% endblock content %}
+
+{% block script %}
+<script defer>
+	const fetchBooks = async () => {
+		const response = await fetch('/api/book/json')
+		const responseJson = await response.json()
+		return responseJson
+	}
+
+	const topBookComponent = (book) => {
+		return `
+		<a href="details/${book.id}">
+			<div
+				style="background-image: url('${book.cover}'); background-repeat: no-repeat; background-size: cover; object-fit: cover;"
+				class="rounded-[10px]">
+				<div class="top-card-book glassmorphism-full-transparent flex flex-row gap-2 h-[150px] p-2 pl-6">
+					<img src="${book.cover}" class="h-[200px] relative top-[-70px]">
+					<div class="flex flex-col justify-around">
+						<div>
+							<h3 class="font-young-serif text-lg text-white-creamy">${book.title}</h3>
+							<div class="flex items-center gap-2">
+								<p>${book.authorUsername}</p>
+								<img src="{% static 'icon/dot-single.svg' %}" class="w-[20px]">
+								<div class="flex justify-center items-center">
+									<img src="{% static 'icon/rating_star.svg' %}" class="w-[20px]">
+									<p>${book.avgRating}/10</p>
+								</div>
+							</div>
+						</div>
+						<p>${book.description}</p>
+					</div>
+				</div>
+			</div>
+		</a>
+		`
+	}
+	const exploreBookComponent = (book, role) => {
+		if (role == 'READER') {
+			const imgBookmarked = `<img id="img-bookmark-${book.id}" src="{% static 'icon/bookmarked.svg' %}" class="w-[40px]">`
+			const imgNotBookmarked = `<img id="img-bookmark-${book.id}" src="{% static 'icon/not_bookmarked.svg' %}" class="w-[40px]">`
+
+			const buttonAddBookmark = `
+			<button id="btn-bookmark-${book.id}" onclick="addBookmark('${book.id}')">
+				${imgNotBookmarked}
+			</button>
+			`
+
+			const buttonDeleteBookmark = `
+			<button id="btn-bookmark-${book.id}" onclick="deleteBookmark('${book.bookmarkId}', '${book.id}')">
+				${imgBookmarked}
+			</button>
+			`
+
+			return `
+			<div class="flex flex-col">
+				<a href="details/{{ book.book_id }}">
+				<a href="details/${book.id}">
+					<div class="explore-card-book flex flex-col gap-2">
+						<img src="${book.cover}">
+
+						<div class="max-w-[302px]">
+							<h3 class="font-young-serif">${book.title}</h3>
+
+							<div class="flex items-center">
+								<p class="text-brown">${book.authorUsername}</p>
+							</div>
+						</div>
+					</div>
+				</a>
+				<div>
+					${book.isBookmarked ? buttonDeleteBookmark : buttonAddBookmark}
+				</div>
+			</div>
+			`
+		} else {
+			return `
+			<div class="flex flex-col">
+				<a href="details/${book.id}">
+					<div class="explore-card-book flex flex-col gap-2">
+						<img src="${book.cover}">
+
+						<div class="max-w-[302px]">
+							<h3 class="font-young-serif">${book.title}</h3>
+
+							<div class="flex items-center">
+								<p class="text-brown">${book.authorUsername}</p>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			`
+		}
+	}
+
+	const addBookmark = async (bookId) => {
+		console.log(bookId);
+		const buttonBookmark = document.querySelector(`#btn-bookmark-${bookId}`)
+		const imgBookmark = document.querySelector(`#img-bookmark-${bookId}`)
+		console.log(imgBookmark.src);
+
+		const response = await fetch(`bookmark/add/${bookId}`)
+
+		if (response.ok) {
+			const responseJson = await response.json()
+			imgBookmark.src = `{% static 'icon/bookmarked.svg' %}`
+			// console.log(imgBookmark.src);
+			// buttonBookmark.onclick = `deleteBookmark('${responseJson.bookmarkId}', '${bookId}')`
+			window.location.reload()
+		}
+	}
+
+	const deleteBookmark = async (bookmarkId, bookId) => {
+		console.log(bookmarkId, bookId);
+		const buttonBookmark = document.querySelector(`#btn-bookmark-${bookId}`)
+		const imgBookmark = document.querySelector(`#img-bookmark-${bookId}`)
+		console.log(imgBookmark.src);
+
+		const response = await fetch(`bookmark/delete/${bookmarkId}`)
+
+		if (response.ok) {
+			imgBookmark.src = `{% static 'icon/not_bookmarked.svg' %}`
+			console.log(buttonBookmark.onclick);
+			// buttonBookmark.onclick = function (bookId) { addBookmark(bookId) }
+			// buttonBookmark.addEventListener('click', (event) => {
+			// 	addBookmark(bookId)
+			// })
+			window.location.reload()
+		}
+	}
+
+	const refresh = async () => {
+		const responseData = await fetchBooks()
+		const role = responseData.role
+		const topBooks = responseData.topBooks
+		const exploreBooks = responseData.exploreBooks
+
+		const topBooksContainer = document.querySelector('#top-card-book-container')
+		const exploreBooksContainer = document.querySelector('#explore-card-book-container')
+
+		let topBooksString = ''
+		topBooks.forEach(topBook => {
+			topBooksString += topBookComponent(topBook)
+		});
+		topBooksContainer.innerHTML = topBooksString
+
+		let exploreBooksString = ''
+		exploreBooks.forEach(exploreBook => {
+			exploreBooksString += exploreBookComponent(exploreBook, role)
+		})
+		exploreBooksContainer.innerHTML = exploreBooksString
+
+	}
+
+	refresh()
+</script>
+{% endblock script %}

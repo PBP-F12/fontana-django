@@ -5,37 +5,44 @@ from main.models import Book
 from django.http import HttpResponse
 from django.core import serializers
 from .forms import ReviewForm
-from django.shortcuts import redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
+@login_required(login_url=reverse_lazy('auths:login'))
 def book_details(request, book_id):
-    print(book_id)
     book = get_object_or_404(Book, book_id=book_id)
-    return render(request, 'book_details.html', {'book': book})
+    context = {
+        'book': book,
+        'userCurrent': request.user,
+        'role': request.user.role,
+    }
+    return render(request, 'book_details.html', context)
 
-def show_mainbruh(request):
-    return render(request, 'mainbruh.html')
-
-def get_review_json(request, book_title):
-    book = get_object_or_404(Book, book_title=book_title)
+@login_required(login_url=reverse_lazy('auths:login'))
+def get_review_json(request, book_id):
+    book = get_object_or_404(Book, book_id=book_id)
     reviews = Review.objects.filter(book_id=book)
     return HttpResponse(serializers.serialize('json', reviews), content_type='application/json')
 
-def create_review(request, book_title):
-    book = get_object_or_404(Book, book_title=book_title)
+@login_required(login_url=reverse_lazy('auths:login'))
+def create_review(request, book_id):
+    book = get_object_or_404(Book, book_id=book_id)
+    
+    if not request.user.is_reader:
+        # Redirect the user or show an error message
+        return HttpResponse(status=500)
+
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
-            # Assign the user and book to the form before saving
             form.instance.user_id = request.user
             form.instance.book_id = book
             form.save()
-            # Redirect to the book detail page or any other page you prefer
-            return HttpResponseRedirect(reverse('review:book_details', args=[book_title]))
+            return HttpResponseRedirect(reverse('review:book_details', args=[book_id]))
     else:
         form = ReviewForm()
 
@@ -45,4 +52,11 @@ def create_review(request, book_title):
     }
     return render(request, 'add_review.html', context)
 
-# Create your views here.
+@csrf_exempt
+@require_http_methods(["DELETE"])
+@login_required(login_url=reverse_lazy('auths:login'))
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, review_id=review_id)
+    review.delete()
+    return HttpResponse(status=204)
+    
