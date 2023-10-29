@@ -22,8 +22,6 @@
     </div>
 </div>
 
-
-
 <div id="events-container" class="flex flex-col gap-4"></div>
 
 <br />
@@ -55,18 +53,20 @@
 		events.forEach(async (event) => {
 			console.log(event);
 			eventCards += `
-			<a href="${event.eventDetailsUrl}" class="block flex gap-4 glassmorphism w-full p-5">
-				<img src="${event.posteLink}" class="w-16 h-16 object-cover rounded-full">
-				<div class="flex-1 ml-4">
-					<a class="font-bold text-xl text-#765827 mb-2 block">${event.eventName}</a>
-                    <p class="text-gray-600 flex items-center">
-                        <svg class="w-4 h-4 mr-2 fill-current text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <path d="M16 2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1V0h2v2h6V0h2v2h1zM4 8V6h12v2H4zm0 3v2h12v-2H4zm0 3v2h7v-2H4z"/>
-                        </svg>
-                        ${event.eventDate}
-                    </p>
-				</div>
-			</a>
+            <div class="container mx-auto">
+                <div style="width: 95%; argin-bottom: 10px; margin: 0 auto;" class="mx-auto rounded-full overflow-hidden shadow-lg mb-4 flex p-4 border">
+                    <img class="w-16 h-16 object-cover rounded-full" style="margin-left: 10px" src="${event.posterLink}">
+                    <div class="flex-1 ml-4">
+                        <a href="${event.eventDetailsUrl}" class="font-bold text-xl text-#765827 mb-2 block">${event.eventName}</a>
+                        <p class="text-gray-600 flex items-center">
+                            <svg class="w-4 h-4 mr-2 fill-current text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M16 2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1V0h2v2h6V0h2v2h1zM4 8V6h12v2H4zm0 3v2h12v-2H4zm0 3v2h7v-2H4z"/>
+                            </svg>
+                            ${event.eventDate}
+                        </p>
+                    </div>
+                </div>
+            </div>
 			`
 		})
 
@@ -74,33 +74,6 @@
 	}
 
 	refreshEvents()
-
-//  async function refreshProducts() {
-//         const items = await getEvents();
-//         document.getElementById("event_cards").innerHTML = "";
-//         let htmlString = ""
-//         console.log(items)
-//         items.forEach((product) => {
-//         htmlString += `\n
-//         <div class="container mx-auto">
-//             <div style="width: 95%; margin: 0 auto; margin-bottom: 10px;" class="mx-auto rounded-full overflow-hidden shadow-lg mb-4 flex p-4 border">
-//                 <img class="w-16 h-16 object-cover rounded-full" style="margin-left: 10px" src="${event.fields.poster_link}" alt="{{ event.event_name }}">
-//                 <div class="flex-1 ml-4">
-//                     <a class="font-bold text-xl text-#765827 mb-2 block">${event.fields.event_name}</a>
-//                     <p class="text-gray-600 flex items-center">
-//                         <svg class="w-4 h-4 mr-2 fill-current text-gray-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-//                             <path d="M16 2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h1V0h2v2h6V0h2v2h1zM4 8V6h12v2H4zm0 3v2h12v-2H4zm0 3v2h7v-2H4z"/>
-//                         </svg>
-//                         ${event.fields.event_date}
-//                     </p>
-//                 </div>
-//             </div>
-//     </div>
-//     `
-//     })
-//     document.getElementById("event_cards").innerHTML = htmlString
-// }
-// refreshProducts()
 
 </script>
 {% endblock script %}
