@@ -3,12 +3,12 @@
 	<nav class="flex justify-center items-center">
 		<a href="/">Home</a>
 		<a href="/event">Events</a>
-		{% if role == 'READER' %}
+		{% if user.role == 'READER' %}
 		<a href="/bookmark">Bookmarks</a>
-		{% elif role == 'AUTHOR' %}
+		{% elif user.role == 'AUTHOR' %}
 		<a href="/book/author">My Books</a>
 		{% endif %}
-		{% if role == 'READER' or role == 'AUTHOR' %}
+		{% if user.role == 'READER' or user.role == 'AUTHOR' %}
 		<a href="/forum">Forum</a>
 		{% endif %}
 		<a href="{% url 'auths:logout' %}">Log Out</a>
