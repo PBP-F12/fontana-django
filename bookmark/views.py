@@ -12,13 +12,15 @@ def add_bookmark(request, book_id):
 
     # simpan bookmark
     book_bookmarked = Book.objects.get(pk=book_id)
-    # cek apakah sudah pernah di bookmark
-    bookmark = Bookmark.objects.filter(
-        book_id=book_bookmarked, user_id=request.user)
-    if len(bookmark) > 0:
-        return JsonResponse({'msg': 'Failed.'}, status=400)
+
+    # # cek apakah sudah pernah di bookmark
+    # bookmark = Bookmark.objects.filter(
+    #     book_id=book_bookmarked, user_id=request.user)
+    # if len(bookmark) > 0:
+    #     return JsonResponse({'msg': 'Failed.'}, status=400)
 
     # simpan bookmark
+    print('hi')
     new_bookmark = Bookmark(user_id=request.user, book_id=book_bookmarked)
     new_bookmark.save()
 
@@ -28,7 +30,7 @@ def add_bookmark(request, book_id):
 def delete_bookmark(request, bookmark_id):
     bookmark = get_object_or_404(Bookmark, bookmark_id=bookmark_id)
     bookmark.delete()
-    return HttpResponseRedirect(reverse('bookmark:get_bookmark_by_user'))
+    return JsonResponse({'msg': 'Success!'})
 
 
 def delete_bookmark_by_book_id(request, book_id):

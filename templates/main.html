@@ -154,7 +154,9 @@
 		if (response.ok) {
 			const responseJson = await response.json()
 			imgBookmark.src = `{% static 'icon/bookmarked.svg' %}`
-			buttonBookmark.onclick = deleteBookmark(responseJson.bookmarkId)
+			// console.log(imgBookmark.src);
+			// buttonBookmark.onclick = `deleteBookmark('${responseJson.bookmarkId}', '${bookId}')`
+			window.location.reload()
 		}
 	}
 
@@ -167,9 +169,13 @@
 		const response = await fetch(`bookmark/delete/${bookmarkId}`)
 
 		if (response.ok) {
-			const responseJson = await response.json()
 			imgBookmark.src = `{% static 'icon/not_bookmarked.svg' %}`
-			buttonBookmark.onclick = deleteBookmark(responseJson.bookmarkId)
+			console.log(buttonBookmark.onclick);
+			// buttonBookmark.onclick = function (bookId) { addBookmark(bookId) }
+			// buttonBookmark.addEventListener('click', (event) => {
+			// 	addBookmark(bookId)
+			// })
+			window.location.reload()
 		}
 	}
 
