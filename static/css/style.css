@@ -5,7 +5,7 @@
   --creamy-1: #eac696;
   --creamy-2: #c8ae7d;
   --brown-1: #765827;
-  --brown-2: #65451f;
+  --brown-2: rgb(102, 70, 31);
   --black: #333333;
 }
 
@@ -172,6 +172,25 @@ textarea {
   transition: all 0.3s ease;
   text-decoration: none;
   font-weight: bold;
+}
+
+.glass-button-alternate {
+  background: rgb(102, 70, 31);
+  color: var(--creamy-0);
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.glass-button-alternate:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .glass-button:hover {

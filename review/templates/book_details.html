@@ -7,13 +7,29 @@
     <script src="https://kit.fontawesome.com/06223f8e7b.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>{{ book.book_title }}</title>
+    <style>
+        body {
+            background-image: url('{% static "img/book_emoji.png" %}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <body>
+    <div class="h-[400px]">
+        <img id="main-picture" src="{% static 'img/book_open.jpg' %}" alt="book event image" class="w-full h-[400px]">
+        <div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
+        <div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
+            <h1 class="font-young-serif text-creamy text-5xl drop-shadow-2xl">Details</h1>
+            <p class="text-creamy">See more, and what others think.</p>
+        </div>
+    </div>
     {% include 'header.html' %}
     <main>
-        <div class=" glassmorphism p-6 rounded-lg shadow-lg" style="margin-left: 50px; margin-right: 50px; margin-top: 100px" >
+        <div class=" glassmorphism p-6 rounded-lg shadow-lg" style="margin-left: 50px; margin-right: 50px; margin-top: 20px" >
             <div class="flex flex-wrap items-start"> {# Use items-start to align content at the top #}
                 <div class="w-full md:w-1/3 text-center">
                     <img src="{{ book.book_cover_link }}" alt="{{ book.book_title }} Cover" class="max-w-xs mx-auto rounded-lg shadow-md mt-6">
@@ -47,7 +63,9 @@
         
         <div class="mt-20 glassmorphism p-6 rounded-lg shadow-lg relative" style="margin-left: 30px; margin-right: 30px; margin-bottom: 30px" >
             <h1 class="text-2xl font-semibold text-brown mb-4 inline-block">Reviews:</h1>
-            <a href="{% url 'review:create_review' book.book_title %}" class="glass-button absolute top-0 right-0 mt-2 mr-6">Add Review</a>
+            {% if user.is_authenticated and user.is_reader %}
+                <a href="{% url 'review:create_review' book.book_id %}" class="glass-button absolute top-0 right-0 mt-2 mr-6">Add Review</a>
+            {% endif %}
             <div id="reviews-container" class="glassmorphism">
                 <!-- Reviews will be loaded here -->
             </div>
@@ -56,7 +74,20 @@
 
     <script>
         async function getReviews() {
-            return fetch("{% url 'review:get_review_json' book.book_title %}").then((res) => res.json());
+            return fetch("{% url 'review:get_review_json' book.book_id %}").then((res) => res.json());
+        }
+
+        async function deleteReview(reviewId) {
+            fetch(`/details/delete_review/${reviewId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    refreshReviews(); // Refresh the reviews to reflect the deletion
+                } else {
+                    console.error('Failed to delete review');
+                }
+            });
         }
 
         async function refreshReviews() {
@@ -73,22 +104,43 @@
                 reviews.forEach(async (review) => {
                     const userFetch = await fetch(`/auth/user/${review.fields.user_id}`);
                     const userReal = await userFetch.json();
+                    const userSingle = userReal[0];
+                    var userCurrentPK = parseInt("{{ userCurrent.pk }}");
+                    var userSinglePK = parseInt(userSingle.pk);
+
                     const reviewContainer = document.createElement('div');
-                    reviewContainer.classList.add('p-4', 'border-b', 'border-gray-300');
+                    reviewContainer.classList.add('p-4', 'border-b', 'border-gray-300', 'relative'); // Ensure this is relative
 
                     const reviewHeader = document.createElement('div');
-                    reviewHeader.classList.add('flex', 'flex-row', 'justify-between', 'items-center', 'mb-2');
+                    reviewHeader.classList.add('flex', 'flex-row', 'items-start', 'mb-2', 'relative'); // Ensure this is relative
 
                     const reviewTitle = document.createElement('h3');
                     reviewTitle.classList.add('text-xl', 'font-semibold', 'text-brown');
-                    reviewTitle.innerText = `${userReal[0].fields.username}:`;
+                    reviewTitle.innerText = `${userSingle.fields.username}: `;
 
                     const reviewRating = document.createElement('span');
-                    reviewRating.classList.add('rating-stars', 'text-2xl', 'text-brown');
+                    reviewRating.classList.add('rating-stars', 'text-2xl', 'text-brown', 'ml-2');
                     renderStars(review.fields.review_rating, reviewRating); // Render stars for this review
+                    
+                    if (userCurrentPK === userSinglePK) {
+                        const deleteButton = document.createElement('button');
+                        deleteButton.classList.add('small-button', 'delete-button', 'absolute', 'top-0', 'right-0', 'mt-0', 'mr-2'); // Position button
+                        
+                        const icon = document.createElement('i');
+                        //icon.classList.add('fas', 'fa-times'); // For a cross icon
+                        icon.classList.add('fas', 'fa-trash', 'text-brown'); // Alternatively, for a trash icon
+                        
+                        deleteButton.appendChild(icon);
+                        
+                        deleteButton.addEventListener('click', function () {
+                            deleteReview(review.pk);
+                        });
+                        reviewHeader.appendChild(deleteButton); // Append button to reviewHeader
+                    }
 
                     reviewHeader.appendChild(reviewTitle);
                     reviewHeader.appendChild(reviewRating);
+                    reviewContainer.appendChild(reviewHeader);
 
                     const reviewContent = document.createElement('p');
                     reviewContent.classList.add('text-brown');

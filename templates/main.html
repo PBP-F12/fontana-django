@@ -24,7 +24,7 @@
 		<div id="top-card-book-container"
 			class="flex flex-row gap-6 justify-center overflow-x-scroll overflow-y-hidden pt-16">
 			{% for book in top_books %}
-			<a href="details/{{ book.book_title }}">
+			<a href="details/{{ book.book_id }}">
 				<div
 					style="background-image: url('{{ book.book_cover_link }}'); background-repeat: no-repeat; background-size: cover; object-fit: cover;"
 					class="rounded-[10px]">
@@ -65,7 +65,7 @@
 		<div id="explore-card-book-container" class="flex flex-row flex-wrap gap-6 justify-center">
 			{% for book in explore_books %}
 			<div class="flex flex-col">
-				<a href="details/{{ book.book_title }}">
+				<a href="details/{{ book.book_id }}">
 					<div class="explore-card-book flex flex-col gap-2">
 						<img src="{{ book.book_cover_link }}">
 	
