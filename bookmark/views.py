@@ -9,10 +9,16 @@ from main.models import Book
 
 
 def add_bookmark(request, book_id):
-    # cek apakah sudah pernah di bookmark
 
     # simpan bookmark
     book_bookmarked = Book.objects.get(pk=book_id)
+    # cek apakah sudah pernah di bookmark
+    bookmark = Bookmark.objects.filter(
+        book_id=book_bookmarked, user_id=request.user)
+    if len(bookmark) > 0:
+        return JsonResponse({'msg': 'Failed.'}, status=400)
+
+    # simpan bookmark
     new_bookmark = Bookmark(user_id=request.user, book_id=book_bookmarked)
     new_bookmark.save()
 
