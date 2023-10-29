@@ -55,9 +55,6 @@ def publish_event(request):
 
 @login_required(login_url=reverse_lazy('auths:login'))
 def list_event_ajax(request):
-    if request.user.role != 'ADMIN':
-        return HttpResponseForbidden('FORBIDDEN')
-
     events = Event.objects.all()
     json_response = []
 
