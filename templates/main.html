@@ -24,7 +24,7 @@
 		<div id="top-card-book-container"
 			class="flex flex-row gap-6 justify-center overflow-x-scroll overflow-y-hidden pt-16">
 			{% for book in top_books %}
-			<a href="">
+			<a href="details/{{ book.book_title }}">
 				<div
 					style="background-image: url('{{ book.book_cover_link }}'); background-repeat: no-repeat; background-size: cover; object-fit: cover;"
 					class="rounded-[10px]">
@@ -64,23 +64,30 @@
 
 		<div id="explore-card-book-container" class="flex flex-row flex-wrap gap-6 justify-center">
 			{% for book in explore_books %}
-			<a href="">
-				<div class="explore-card-book flex flex-col gap-2">
-					<img src="{{ book.book_cover_link }}">
-
-					<div class="max-w-[302px]">
-						{% if book.book_title|length > 30 %}
-						<h3 class="font-young-serif">{{ book.book_title|slice:"0:30"|add:"..." }}</h3>
-						{% else %}
-						<h3 class="font-young-serif">{{ book.book_title }}</h3>
-						{% endif %}
-
-						<div class="flex items-center">
-							<p class="text-brown">{{ book.author_id.username }}</p>
+			<div class="flex flex-col">
+				<a href="details/{{ book.book_title }}">
+					<div class="explore-card-book flex flex-col gap-2">
+						<img src="{{ book.book_cover_link }}">
+	
+						<div class="max-w-[302px]">
+							{% if book.book_title|length > 30 %}
+							<h3 class="font-young-serif">{{ book.book_title|slice:"0:30"|add:"..." }}</h3>
+							{% else %}
+							<h3 class="font-young-serif">{{ book.book_title }}</h3>
+							{% endif %}
+	
+							<div class="flex items-center">
+								<p class="text-brown">{{ book.author_id.username }}</p>
+							</div>
 						</div>
 					</div>
+				</a>
+				<div>
+					<a href="{% url 'bookmark:add_bookmark' book.book_id %}">
+						<img src="{% static 'icon/not_bookmarked.svg' %}" class="w-[40px]">
+					</a>
 				</div>
-			</a>
+			</div>
 			{% endfor %}
 		</div>
 	</div>
