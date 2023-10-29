@@ -13,8 +13,8 @@
 	<img id="main-picture" src="{% static 'img/fountain_pen_bg.jpg' %}" alt="fountain pen background" class="w-full h-[400px]">
 	<div class="bg-black h-[400px] w-full z-10 relative bg-opacity-50"></div>
 	<div class="h-[400px] w-full z-10 relative bg-opacity-50 top-[-400px] flex flex-col justify-center items-center">
-		<h1 class="font-young-serif text-white-creamy text-5xl drop-shadow-2xl">Publish Your Book</h1>
-		<span class="text-white-creamy italic">Share your story</span>
+		<h1 class="font-young-serif text-creamy text-5xl drop-shadow-2xl">Publish Your Book</h1>
+		<span class="text-creamy">Share your story</span>
 	</div>
 </div>
 
@@ -23,16 +23,20 @@
 	<form id="form" method="POST">
 
 		<div class="glassmorphism shadow-2xl container mx-auto my-4 px-4 lg:px-20 z-0">
-
+			<img src="{% static 'img/books_vector.png' %}" alt="Book Illustration" class="absolute bottom-0 right-0 max-w-1/4 z-10">
 			{% csrf_token %}
 			<div class="w-full p-8 my-4 md:px-12 lg:w-9/12 lg:pl-20 lg:pr-40 mr-auto rounded-2xl">
 				
-				<div class="flex">
-					<h2 class="font-bold uppercase text-5xl mb-5">First Things First..</h2>
+				<h2 class="font-bold uppercase text-5xl mt-2 whitespace-nowrap">First Things First..</h2>
+				
+				<div class="text-lg h-20" id="text-animation">
+					<div id="line1" class="mt-4"></div>
+					<div id="line2" class="mb-2"></div>
 				</div>
+				
 
 				<div class="grid grid-cols-1">
-					<label for="book_title" class="block font-bold mt-5">Book Title*</label>
+					<label for="book_title" class="block font-bold">Book Title*</label>
 					<input id="book_title" name="book_title" class="w-full bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"
 					type="text" placeholder="Insert your book title" />
 
@@ -69,6 +73,30 @@
 			body: new BookForm(document.querySelector('#form'))
 		})
 	}
+
+	const line1Element = document.getElementById('line1');
+    const line2Element = document.getElementById('line2');
+    const textToType1 = 'Welcome to Fontana';
+    const textToType2 = 'Start your journey here!';
+    
+    function typeText(textElement, text) {
+      let index = 0;
+      function type() {
+        if (index < text.length) {
+          textElement.textContent += text[index];
+          index++;
+          setTimeout(type, 100); // Adjust the time interval as needed
+        }
+      }
+      type();
+    }
+    
+    typeText(line1Element, textToType1);
+    
+    // After a delay, start typing the second line of text
+    setTimeout(() => {
+      typeText(line2Element, textToType2);
+    }, textToType1.length * 100); // Wait until the first line is finished typing
 </script>
 
 {% include 'footer.html' %}
