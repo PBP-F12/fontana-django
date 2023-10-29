@@ -86,10 +86,22 @@
 		`
 	}
 	const exploreBookComponent = (book, role) => {
-		const imgBookmarked = `<img id="img-bookmark-${book.id}" src="{% static 'icon/bookmarked.svg' %}" class="w-[40px]">`
-		const imgNotBookmarked = `<img id="img-bookmark-${book.id}" src="{% static 'icon/not_bookmarked.svg' %}" class="w-[40px]">`
-
 		if (role == 'READER') {
+			const imgBookmarked = `<img id="img-bookmark-${book.id}" src="{% static 'icon/bookmarked.svg' %}" class="w-[40px]">`
+			const imgNotBookmarked = `<img id="img-bookmark-${book.id}" src="{% static 'icon/not_bookmarked.svg' %}" class="w-[40px]">`
+
+			const buttonAddBookmark = `
+			<button id="btn-bookmark-${book.id}" onclick="addBookmark('${book.id}')">
+				${imgNotBookmarked}
+			</button>
+			`
+
+			const buttonDeleteBookmark = `
+			<button id="btn-bookmark-${book.id}" onclick="deleteBookmark('${book.bookmarkId}', '${book.id}')">
+				${imgBookmarked}
+			</button>
+			`
+
 			return `
 			<div class="flex flex-col">
 				<a href="details/${book.id}">
@@ -106,9 +118,7 @@
 					</div>
 				</a>
 				<div>
-					<button onclick="addBookmark('${book.id}')">
-						${book.isBookmarked ? imgBookmarked : imgNotBookmarked}
-					</button>
+					${book.isBookmarked ? buttonDeleteBookmark : buttonAddBookmark}
 				</div>
 			</div>
 			`
@@ -135,15 +145,31 @@
 
 	const addBookmark = async (bookId) => {
 		console.log(bookId);
+		const buttonBookmark = document.querySelector(`#btn-bookmark-${bookId}`)
 		const imgBookmark = document.querySelector(`#img-bookmark-${bookId}`)
 		console.log(imgBookmark.src);
 
-		await fetch(`bookmark/add/${bookId}`)
+		const response = await fetch(`bookmark/add/${bookId}`)
 
-		if (imgBookmark.src.includes('not_bookmarked')) {
+		if (response.ok) {
+			const responseJson = await response.json()
 			imgBookmark.src = `{% static 'icon/bookmarked.svg' %}`
-		} else {
+			buttonBookmark.onclick = deleteBookmark(responseJson.bookmarkId)
+		}
+	}
+
+	const deleteBookmark = async (bookmarkId, bookId) => {
+		console.log(bookmarkId, bookId);
+		const buttonBookmark = document.querySelector(`#btn-bookmark-${bookId}`)
+		const imgBookmark = document.querySelector(`#img-bookmark-${bookId}`)
+		console.log(imgBookmark.src);
+
+		const response = await fetch(`bookmark/delete/${bookmarkId}`)
+
+		if (response.ok) {
+			const responseJson = await response.json()
 			imgBookmark.src = `{% static 'icon/not_bookmarked.svg' %}`
+			buttonBookmark.onclick = deleteBookmark(responseJson.bookmarkId)
 		}
 	}
 

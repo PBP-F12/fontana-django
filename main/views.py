@@ -52,15 +52,21 @@ def get_book_ajax(request):
 
         if explore_book.book_id in book_ids_in_bookmark:
             is_bookmark = True
+            print('hehe')
+            bookmark_id = bookmarks[book_ids_in_bookmark.index(
+                explore_book.book_id)].bookmark_id
+            print(bookmark_id)
         else:
             is_bookmark = False
+            bookmark_id = None
 
         explore_books_json.append({
             'id': explore_book.book_id,
             'cover': explore_book.book_cover_link,
             'title': title,
             'authorUsername': explore_book.author_id.username,
-            'isBookmarked': is_bookmark
+            'isBookmarked': is_bookmark,
+            'bookmarkId': bookmark_id
         })
 
     json_response = {

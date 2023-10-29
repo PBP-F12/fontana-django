@@ -16,7 +16,7 @@ def add_bookmark(request, book_id):
     new_bookmark = Bookmark(user_id=request.user, book_id=book_bookmarked)
     new_bookmark.save()
 
-    return JsonResponse({'msg': 'Success!'})
+    return JsonResponse({'msg': 'Success!', 'bookmarkId': new_bookmark.bookmark_id})
 
 
 def delete_bookmark(request, bookmark_id):
