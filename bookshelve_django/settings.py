@@ -138,3 +138,6 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'auths.User'
+
+CORS_ALLOWED_ORIGINS = ['http://fontana.my.id',
+                        'https://fontana.my.id', 'http://0.0.0.0:8001']
