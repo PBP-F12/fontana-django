@@ -138,3 +138,36 @@ def register_as_reader_api(request):
         return JsonResponse({
             "message": "Bad request"
         }, status=400)
+
+
+@csrf_exempt
+def register_as_author_api(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+
+        # check if user is already available
+        try:
+            user = User.objects.get(username=username)
+            return JsonResponse({
+                "message": "Username is already exist"
+            }, status=409)
+        except ObjectDoesNotExist:
+            form = AuthorRegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+
+                return JsonResponse({
+                    "message": "Register success"
+                }, status=200)
+
+            else:
+                return JsonResponse({"message": "Form is not valid."}, status=400)
+        except Exception as e:
+            print(f'Error: {e}')
+            return JsonResponse({
+                "message": "Internal Server Error."
+            }, status=500)
+    else:
+        return JsonResponse({
+            "message": "Bad request"
+        }, status=400)
