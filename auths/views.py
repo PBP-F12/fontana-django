@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.contrib import messages
 from django.core import serializers
@@ -7,6 +7,7 @@ from .models import User
 from .forms import AuthorRegistrationForm, ReaderRegistrationForm
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -69,3 +70,37 @@ def get_user_by_id(request, user_id):
     user = User.objects.filter(pk=user_id)
 
     return HttpResponse(serializers.serialize("json", user), content_type="application/json")
+
+
+@csrf_exempt
+def login_user_api(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                # Status login sukses.
+                return JsonResponse({
+                    "username": user.username,
+                    "status": True,
+                    "message": "Login sukses!"
+                    # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
+                }, status=200)
+            else:
+                return JsonResponse({
+                    "status": False,
+                    "message": "Login gagal, akun dinonaktifkan."
+                }, status=401)
+
+        else:
+            return JsonResponse({
+                "status": False,
+                "message": "Login gagal, periksa kembali email atau kata sandi."
+            }, status=401)
+    else:
+        return JsonResponse({
+            "status": False,
+            "message": "Bad request"
+        }, status=400)
