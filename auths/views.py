@@ -171,3 +171,21 @@ def register_as_author_api(request):
         return JsonResponse({
             "message": "Bad request"
         }, status=400)
+
+
+@csrf_exempt
+def logout_user_api(request):
+    username = request.user.username
+
+    try:
+        logout(request)
+        return JsonResponse({
+            "username": username,
+            "status": 200,
+            "message": "Logout berhasil!"
+        }, status=200)
+    except:
+        return JsonResponse({
+            "status": 401,
+            "message": "Logout gagal."
+        }, status=401)
