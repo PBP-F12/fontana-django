@@ -155,7 +155,6 @@ def add_reply_to_forum_ajax(request, forum_id):
         return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
 
     if request.method == 'POST':
-        print(request.headers)
         if request.headers['Content-Type'] == 'application/json' or 'application/json' in request.headers['Content-Type']:
             comment = json.loads(request.body)['comment']
         else:
