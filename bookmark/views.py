@@ -65,8 +65,8 @@ def get_bookmark_by_user_ajax(request):
                 'authorUsername': bookmark.book_id.author_id.username
             })
 
-        return JsonResponse({'bookmarks': json_response})
+        return JsonResponse({'bookmarks': json_response, 'status': 200}, status=200)
     else:
-        return json_response({
+        return JsonResponse({
             'message': 'BAD REQUEST'
         }, status=400)
