@@ -76,30 +76,33 @@ def get_user_by_id(request, user_id):
 @csrf_exempt
 def login_user_api(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                # Status login sukses.
-                return JsonResponse({
-                    "username": user.username,
-                    "status": True,
-                    "message": "Login sukses!"
-                    # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
-                }, status=200)
+        try:
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    # Status login sukses.
+                    return JsonResponse({
+                        "username": user.username,
+                        "status": True,
+                        "message": "Login sukses!"
+                        # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
+                    }, status=200)
+                else:
+                    return JsonResponse({
+                        "status": False,
+                        "message": "Login gagal, akun dinonaktifkan."
+                    }, status=401)
+
             else:
                 return JsonResponse({
                     "status": False,
-                    "message": "Login gagal, akun dinonaktifkan."
+                    "message": "Login gagal, periksa kembali email atau kata sandi."
                 }, status=401)
-
-        else:
-            return JsonResponse({
-                "status": False,
-                "message": "Login gagal, periksa kembali email atau kata sandi."
-            }, status=401)
+        except:
+            return JsonResponse({'message': 'No payload provided', 'status': 400}, status=400)
     else:
         return JsonResponse({
             "status": False,

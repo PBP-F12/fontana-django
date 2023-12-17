@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse, HttpResponseBadRequest
 from django.urls import reverse, reverse_lazy
@@ -5,8 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 
+from main.models import Book
+
 from .models import Forum, ForumReply
 from .forms import ForumForm, ForumReplyForm
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
 
@@ -70,11 +75,16 @@ def display_forum_by_id(request, forum_id):
     return render(request, 'forum_details.html', context)
 
 
-@login_required(login_url=reverse_lazy('auths:login'))
+# @login_required(login_url=reverse_lazy('auths:login'))
+@csrf_exempt
 def display_all_forums_ajax(request):
-    print(request.user.role)
-    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
-        return HttpResponseForbidden('FORBIDDEN')
+    print(request.COOKIES.get('sessionid'))
+    print(request.user)
+    try:
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
 
     forums = Forum.objects.all()
     json_response = []
@@ -93,7 +103,7 @@ def display_all_forums_ajax(request):
 
         json_response.append(forum_json)
 
-    return JsonResponse({'forums': json_response})
+    return JsonResponse({'forums': json_response, 'status': 200}, status=200)
 
     # forums = Forum.objects.all()
 
@@ -151,3 +161,37 @@ def add_reply_to_forum_ajax(request, forum_id):
 
     else:
         return JsonResponse({'msg': 'BAD REQUEST'}, status=400)
+
+
+@csrf_exempt
+def create_forum_ajax(request):
+    print(request.COOKIES.get('sessionid'))
+    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+        return JsonResponse({
+            'message': 'Forbidden',
+            'status': 403
+        }, status=403)
+
+    if request.method == 'POST':
+        user = request.user
+
+        print(user)
+
+        data = json.loads(request.body)
+        print(data)
+
+        try:
+            bookTopic = Book.objects.get(book_id=data['bookTopic'])
+            Forum.objects.create(
+                forum_title=data['title'], forum_discussion=data['discussion'], book_topic=bookTopic, forum_creator_id=user)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Book is not found.', 'status': 404}, status=404)
+        except:
+            return JsonResponse({'message': 'Internal server error', 'status': 500}, status=500)
+
+        return JsonResponse({'message': 'Success created forum!', 'status': 200}, status=200)
+    else:
+        return JsonResponse({
+            'message': 'BAD REQUEST',
+            'status': 400
+        }, status=400)
