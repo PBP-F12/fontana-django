@@ -91,6 +91,7 @@ def display_all_forums_ajax(request):
 
     for forum in forums:
         forum_json = {
+            'forumId': forum.forum_id,
             'forumDetailLink': f'/forum/{forum.forum_id}',
             'forumTitle': forum.forum_title,
             'book': {
@@ -110,10 +111,14 @@ def display_all_forums_ajax(request):
     # return HttpResponse(serializers.serialize("json", forums), content_type="application/json")
 
 
-@login_required(login_url=reverse_lazy('auths:login'))
+# @login_required(login_url=reverse_lazy('auths:login'))
+@csrf_exempt
 def display_forum_by_id_ajax(request, forum_id):
-    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
-        return HttpResponseForbidden('FORBIDDEN')
+    try:
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
 
     forum = Forum.objects.get(pk=forum_id)
     replies = ForumReply.objects.filter(forum_id=forum_id)
@@ -138,16 +143,28 @@ def display_forum_by_id_ajax(request, forum_id):
         'replies': reply_list_json
     }
 
-    return JsonResponse({'forum': json_response})
+    return JsonResponse({'forum': json_response, 'status': 200}, status=200)
 
 
-@login_required(login_url=reverse_lazy('auths:login'))
+@csrf_exempt
 def add_reply_to_forum_ajax(request, forum_id):
-    if request.user.role != 'READER' and request.user.role != 'AUTHOR':
-        return HttpResponseForbidden('FORBIDDEN')
+    try:
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
 
     if request.method == 'POST':
-        comment = request.POST.get('comment')
+        print(request.headers)
+        if request.headers['Content-Type'] == 'application/json' or 'application/json' in request.headers['Content-Type']:
+            comment = json.loads(request.body)['comment']
+        else:
+            comment = request.POST.get('comment')
+
+        print(comment)
+
+        if not comment:
+            return JsonResponse({'message': 'Empty comment.', 'status': 400}, status=400)
 
         try:
             forum = Forum.objects.get(forum_id=forum_id)
@@ -155,12 +172,12 @@ def add_reply_to_forum_ajax(request, forum_id):
             forum_reply = ForumReply(
                 commentor_id=request.user, forum_id=forum, text=comment)
             forum_reply.save()
-            return JsonResponse({'msg': 'Success!', 'reply': {'username': request.user.username, 'comment': comment}})
+            return JsonResponse({'message': 'Success!', 'reply': {'username': request.user.username, 'comment': comment}, 'status': 200}, status=200)
         except ObjectDoesNotExist:
-            return Http404('NOT FOUND')
+            return JsonResponse({'message': 'Forum not found', 'status': 404}, status=404)
 
     else:
-        return JsonResponse({'msg': 'BAD REQUEST'}, status=400)
+        return JsonResponse({'message': 'BAD REQUEST', 'status': 400}, status=400)
 
 
 @csrf_exempt
