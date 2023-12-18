@@ -25,7 +25,7 @@
 {% block script %}
 <script defer>
 	const getAllForums = async () => {
-		const response = await fetch('/forum/ajax')
+		const response = await fetch('/forum/api')
 		const forums = await response.json()
 		return forums.forums
 	}

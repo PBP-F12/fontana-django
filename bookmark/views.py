@@ -50,17 +50,23 @@ def get_bookmark_by_user(request):
 
 
 def get_bookmark_by_user_ajax(request):
-    bookmarks = Bookmark.objects.filter(user_id=request.user)
+    if request.method == 'GET':
+        print(request.user)
+        bookmarks = Bookmark.objects.filter(user_id=request.user)
 
-    json_response = []
+        json_response = []
 
-    for bookmark in bookmarks:
-        json_response.append({
-            'bookmarkId': bookmark.bookmark_id,
-            'bookId': bookmark.book_id.book_id,
-            'bookCover': bookmark.book_id.book_cover_link,
-            'bookTitle': bookmark.book_id.book_title,
-            'authorUsername': bookmark.book_id.author_id.username
-        })
+        for bookmark in bookmarks:
+            json_response.append({
+                'bookmarkId': bookmark.bookmark_id,
+                'bookId': bookmark.book_id.book_id,
+                'bookCover': bookmark.book_id.book_cover_link,
+                'bookTitle': bookmark.book_id.book_title,
+                'authorUsername': bookmark.book_id.author_id.username
+            })
 
-    return JsonResponse({'bookmarks': json_response})
+        return JsonResponse({'bookmarks': json_response})
+    else:
+        return json_response({
+            'message': 'BAD REQUEST'
+        }, status=400)

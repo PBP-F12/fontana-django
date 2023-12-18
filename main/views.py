@@ -1,4 +1,5 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.core import serializers
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -78,7 +79,15 @@ def get_book_ajax(request):
 
     return JsonResponse(json_response)
 
+
 def get_book_json(request):
     books = Book.objects.all()
     return HttpResponse(serializers.serialize("json", books), content_type="application/json")
     
+def show_json(request):
+    data = Book.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_json_by_id(request, id):
+    data = Book.objects.filter(pk=id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")

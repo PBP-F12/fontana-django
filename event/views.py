@@ -1,9 +1,11 @@
+import json
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotFound, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from yaml import serialize
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Event
 from main.models import Book
@@ -69,3 +71,40 @@ def list_event_ajax(request):
         json_response.append(event_json)
 
     return JsonResponse({'events': json_response})
+
+def show_json(request):
+    data = Event.objects.all()
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def show_json_by_id(request, event_id):
+    data = Event.objects.filter(pk=event_id)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        
+        data = json.loads(request.body)
+        print(data)
+
+        try:
+            book = Book.objects.get(book_id=data['book_id'])
+        except ObjectDoesNotExist:
+            return JsonResponse({"status": "not found"}, status=404)
+        except:
+            return JsonResponse({"status": "error"}, status=500)
+
+        new_product = Event.objects.create(
+            event_name = data["event_name"],
+            location = data["location"],
+            description = data["description"],
+            poster_link = data["poster_link"],
+            event_date = data["event_date"],
+            book_id = book,
+        )
+        
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)

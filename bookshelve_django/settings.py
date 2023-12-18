@@ -28,8 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*', 'fontana.my.id']
 
-CSRF_TRUSTED_ORIGINS = ['https://fontana.my.id']
-
 
 # Application definition
 
@@ -147,4 +145,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auths.User'
 
 CORS_ALLOWED_ORIGINS = ['http://fontana.my.id',
-                        'https://fontana.my.id', 'http://0.0.0.0:8001']
+                        'https://fontana.my.id', 'http://0.0.0.0:8001', 'http://127.0.0.1:8000', 'http://localhost:3000', 'http://127.0.0.1:3000']
+
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
