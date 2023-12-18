@@ -58,5 +58,5 @@ def create_review(request, book_id):
 def delete_review(request, review_id):
     review = get_object_or_404(Review, review_id=review_id)
     review.delete()
-    return HttpResponse(status=204)
+    return HttpResponse(status=204  )
     

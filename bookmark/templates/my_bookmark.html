@@ -9,33 +9,62 @@
         <p class="text-creamy">Save books. Read later.</p>
     </div>
 </div>
-<div class="flex gap-4 flex-wrap justify-center max-w-[1000px] mx-auto mt-4">
+<div id="bookmarks-container" class="flex gap-4 flex-wrap justify-center max-w-[1000px] mx-auto mt-4">
     {% for bookmark in bookmarks %}
-    <div class="flex flex-col">
-        <a href="">
-            <div class="explore-card-book flex flex-col gap-2">
-                <img src="{{ bookmark.book_id.book_cover_link }}">
-
-                <div class="max-w-[302px]">
-                    {% if bookmark.book_id.book_title|length > 30 %}
-                    <h3 class="font-young-serif">{{ bookmark.book_id.book_title|slice:"0:30"|add:"..." }}</h3>
-                    {% else %}
-                    <h3 class="font-young-serif">{{ bookmark.book_id.book_title }}</h3>
-                    {% endif %}
-
-                    <div class="flex items-center">
-                        <p class="text-brown">{{ bookmark.book_id.author_id.username }}</p>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <div>
-            <a href="{% url 'bookmark:delete_bookmark' bookmark.bookmark_id %}">
-                <img src="{% static 'icon/bookmarked.svg' %}" class="w-[40px]">
-            </a>
-        </div>
-    </div>
     {% endfor %}
 </div>
 
 {% endblock %}
+
+{% block script %}
+<script>
+    const getAllBookmarks = async () => {
+        const response = await fetch("/bookmark/ajax/")
+        const reponseJson = await response.json()
+        return reponseJson.bookmarks
+    }
+
+    const bookmarkComponent = (bookmark) => {
+        return `
+        <div class="flex flex-col">
+            <a href="/details/${bookmark.bookId}">
+                <div class="explore-card-book flex flex-col gap-2">
+                    <img src="${bookmark.bookCover}">
+
+                    <div class="max-w-[302px]">
+                        <h3 class="font-young-serif">${bookmark.bookTitle}</h3>
+
+                        <div class="flex items-center">
+                            <p class="text-brown">${bookmark.authorUsername}</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <div>
+                <button onclick="deleteBookmark('${bookmark.bookmarkId}')">
+                    <img src="{% static 'icon/bookmarked.svg' %}" class="w-[40px]">
+                </button>
+            </div>
+        </div>
+        `
+    }
+
+    const deleteBookmark = async (bookmarkId) => {
+        await fetch(`/bookmark/delete/${bookmarkId}`)
+        await refresh()
+    }
+
+    const refresh = async () => {
+        const bookmarksContainer = document.querySelector('#bookmarks-container')
+        const bookmarks = await getAllBookmarks()
+
+        let bookmarksString = ''
+        bookmarks.forEach(bookmark => {
+            bookmarksString += bookmarkComponent(bookmark)
+        });
+        bookmarksContainer.innerHTML = bookmarksString
+    }
+
+    refresh()
+</script>
+{% endblock script %}

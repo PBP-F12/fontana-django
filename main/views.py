@@ -79,9 +79,6 @@ def get_book_ajax(request):
     return JsonResponse(json_response)
 
 def get_book_json(request):
-
     books = Book.objects.all()
-
-
     return HttpResponse(serializers.serialize("json", books), content_type="application/json")
     
