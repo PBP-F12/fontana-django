@@ -1,5 +1,5 @@
 from django.urls import path
-from bookmark.views import add_bookmark, delete_bookmark, get_bookmark_by_user, delete_bookmark_by_book_id, get_bookmark_by_user_ajax
+from bookmark.views import add_bookmark, delete_bookmark, get_bookmark_by_user, delete_bookmark_by_book_id, get_bookmark_by_user_ajax, add_bookmark_ajax, delete_bookmark_by_book_id_ajax
 
 app_name = 'bookmark'
 

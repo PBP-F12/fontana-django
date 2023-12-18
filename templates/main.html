@@ -150,7 +150,9 @@
 		const imgBookmark = document.querySelector(`#img-bookmark-${bookId}`)
 		console.log(imgBookmark.src);
 
-		const response = await fetch(`bookmark/add/${bookId}`)
+		const response = await fetch(`bookmark/api/add/${bookId}`, {
+			method: 'POST'
+		})
 
 		if (response.ok) {
 			const responseJson = await response.json()
@@ -167,7 +169,9 @@
 		const imgBookmark = document.querySelector(`#img-bookmark-${bookId}`)
 		console.log(imgBookmark.src);
 
-		const response = await fetch(`bookmark/delete/${bookmarkId}`)
+		const response = await fetch(`bookmark/api/delete/${bookId}`, {
+			method: 'DELETE'
+		})
 
 		if (response.ok) {
 			imgBookmark.src = `{% static 'icon/not_bookmarked.svg' %}`

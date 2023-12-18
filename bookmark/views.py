@@ -82,6 +82,7 @@ def get_bookmark_by_user_ajax(request):
 
 @csrf_exempt
 def add_bookmark_ajax(request, book_id):
+    #print(book_id)
     try:
         if request.user.role != 'READER':
             return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
@@ -91,9 +92,10 @@ def add_bookmark_ajax(request, book_id):
     if request.method == 'POST':
         try:
             book = Book.objects.get(pk=book_id)
+            
+            print(book.book_title)
 
-            new_bookmark = Bookmark(user_id=request.user, book_id=book)
-            new_bookmark.save()
+            new_bookmark = Bookmark.objects.create(user_id=request.user, book_id=book)
 
             return JsonResponse({'message': 'success', 'status': 200}, status=200)
         except ObjectDoesNotExist:
@@ -117,17 +119,19 @@ def delete_bookmark_by_book_id_ajax(request, book_id):
             book = Book.objects.get(pk=book_id)
 
             user_bookmarks = Bookmark.objects.filter(user_id=request.user, book_id=book)
+            print(user_bookmarks)
 
             if user_bookmarks.count() == 0:
                 return JsonResponse({'message': 'bookmark not found', 'status': 404}, status=404)
-            elif user_bookmarks.count() > 0:
+            elif user_bookmarks.count() > 1:
+                print('go this')
                 return JsonResponse({'message': 'bookmarks is more than one.', 'status': 500}, status=500)
             
             user_bookmarks[0].delete()
 
             return JsonResponse({'message': 'success', 'status': 200}, status=200)
         except ObjectDoesNotExist:
-            return JsonReponse({'message': 'Book not found.', 'status': 404}, status=404)
+            return JsonResponse({'message': 'Book not found.', 'status': 404}, status=404)
 
     else:
         return JsonResponse({
