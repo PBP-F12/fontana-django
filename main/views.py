@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core import serializers
 from bookmark.models import Bookmark
+from auths.models import Author
+from auths.models import Reader
 
 from .models import Book
 
@@ -91,3 +93,14 @@ def show_json(request):
 def show_json_by_id(request, id):
     data = Book.objects.filter(pk=id)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def get_author_name(request, id):
+    author = Author.objects.get(pk=id)  # Using get() instead of filter()
+    authorName = author.username
+    return JsonResponse({"name": authorName})
+
+def get_reader_name(request, id):
+    reader = Reader.objects.get(pk=id)  # Using get() instead of filter()
+    readerName = reader.username
+    return JsonResponse({"name": readerName})
+
