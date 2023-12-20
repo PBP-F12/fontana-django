@@ -41,7 +41,7 @@
                 </div>
             </a>
             <div>
-                <button onclick="deleteBookmark('${bookmark.bookmarkId}')">
+                <button onclick="deleteBookmark('${bookmark.bookId}')">
                     <img src="{% static 'icon/bookmarked.svg' %}" class="w-[40px]">
                 </button>
             </div>
@@ -49,8 +49,10 @@
         `
     }
 
-    const deleteBookmark = async (bookmarkId) => {
-        await fetch(`/bookmark/delete/${bookmarkId}`)
+    const deleteBookmark = async (bookId) => {
+        await fetch(`/bookmark/api/delete/${bookId}`, {
+            method: 'DELETE'
+        })
         await refresh()
     }
 

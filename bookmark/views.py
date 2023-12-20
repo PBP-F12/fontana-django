@@ -6,6 +6,9 @@ from django.urls import reverse
 from main.models import Book
 from django.core import serializers
 
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import ObjectDoesNotExist
+
 # Create your views here.
 
 
@@ -48,8 +51,14 @@ def get_bookmark_by_user(request):
 
     return render(request, 'my_bookmark.html', context)
 
-
+@csrf_exempt
 def get_bookmark_by_user_ajax(request):
+    try:
+        if request.user.role != 'READER':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
     if request.method == 'GET':
         print(request.user)
         bookmarks = Bookmark.objects.filter(user_id=request.user)
@@ -65,8 +74,67 @@ def get_bookmark_by_user_ajax(request):
                 'authorUsername': bookmark.book_id.author_id.username
             })
 
-        return JsonResponse({'bookmarks': json_response})
+        return JsonResponse({'bookmarks': json_response, 'status': 200}, status=200)
     else:
-        return json_response({
+        return JsonResponse({
             'message': 'BAD REQUEST'
+        }, status=400)
+
+@csrf_exempt
+def add_bookmark_ajax(request, book_id):
+    #print(book_id)
+    try:
+        if request.user.role != 'READER':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
+    if request.method == 'POST':
+        try:
+            book = Book.objects.get(pk=book_id)
+            
+            print(book.book_title)
+
+            new_bookmark = Bookmark.objects.create(user_id=request.user, book_id=book)
+
+            return JsonResponse({'message': 'success', 'status': 200}, status=200)
+        except ObjectDoesNotExist:
+            return JsonReponse({'message': 'Book not found.', 'status': 404}, status=404)
+    else:
+        return JsonResponse({
+            'message': 'BAD REQUEST',
+            'status': 400
+        }, status=400)
+
+@csrf_exempt
+def delete_bookmark_by_book_id_ajax(request, book_id):
+    try:
+        if request.user.role != 'READER':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
+    if request.method == 'DELETE':
+        try:
+            book = Book.objects.get(pk=book_id)
+
+            user_bookmarks = Bookmark.objects.filter(user_id=request.user, book_id=book)
+            print(user_bookmarks)
+
+            if user_bookmarks.count() == 0:
+                return JsonResponse({'message': 'bookmark not found', 'status': 404}, status=404)
+            elif user_bookmarks.count() > 1:
+                print('go this')
+                return JsonResponse({'message': 'bookmarks is more than one.', 'status': 500}, status=500)
+            
+            user_bookmarks[0].delete()
+
+            return JsonResponse({'message': 'success', 'status': 200}, status=200)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Book not found.', 'status': 404}, status=404)
+
+    else:
+        return JsonResponse({
+            'message': 'BAD REQUEST',
+            'status': 400
         }, status=400)
