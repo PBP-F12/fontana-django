@@ -13,6 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 import json
+from django.core.exceptions import ObjectDoesNotExist
+
 
 @login_required(login_url=reverse_lazy('auths:login'))
 def book_details(request, book_id):
@@ -31,15 +33,16 @@ def get_review_json(request, book_id):
             return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
     except:
         return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
-    
+
     book = get_object_or_404(Book, book_id=book_id)
     reviews = Review.objects.filter(book_id=book)
     return HttpResponse(serializers.serialize('json', reviews), content_type='application/json')
 
+
 @login_required(login_url=reverse_lazy('auths:login'))
 def create_review(request, book_id):
     book = get_object_or_404(Book, book_id=book_id)
-    
+
     if not request.user.is_reader:
         # Redirect the user or show an error message
         return HttpResponse(status=500)
@@ -60,13 +63,15 @@ def create_review(request, book_id):
     }
     return render(request, 'add_review.html', context)
 
+
 @csrf_exempt
 @require_http_methods(["DELETE"])
 @login_required(login_url=reverse_lazy('auths:login'))
 def delete_review(request, review_id):
     review = get_object_or_404(Review, review_id=review_id)
     review.delete()
-    return HttpResponse(status=204  )
+    return HttpResponse(status=204)
+
 
 @csrf_exempt
 def create_review_flutter(request, book_id):
@@ -92,4 +97,27 @@ def create_review_flutter(request, book_id):
         return JsonResponse({'message': 'Review created successfully.', 'status': 200}, status=200)
     else:
         return JsonResponse({'message': 'Error creating review.', 'status': 401}, status=401)
-    
+
+
+@csrf_exempt
+def get_detail_book(request, book_id):
+    if request.method == 'GET':
+        try:
+            book = Book.objects.get(pk=book_id)
+
+            return JsonResponse({'message': 'Success', 'status': 200, 'book': {
+                'id': book.book_id,
+                'title': book.book_title,
+                'image': book.book_cover_link,
+                'rating': book.avg_rating,
+                'description': book.description,
+                'author': {
+                    'username': book.author_id.username
+                }
+            }}, status=200)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'Not found.', 'status': 404}, status=404)
+        except:
+            return JsonResponse({'message': 'Internal server error', 'status': 500}, status=500)
+    else:
+        return JsonResponse({'message': 'BAD REQUEST', 'status': 400}, status=400)
