@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
+import json
 
 @login_required(login_url=reverse_lazy('auths:login'))
 def book_details(request, book_id):
@@ -22,8 +24,14 @@ def book_details(request, book_id):
     }
     return render(request, 'book_details.html', context)
 
-@login_required(login_url=reverse_lazy('auths:login'))
+
 def get_review_json(request, book_id):
+    try:
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR' and request.user.role != 'ADMIN':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    
     book = get_object_or_404(Book, book_id=book_id)
     reviews = Review.objects.filter(book_id=book)
     return HttpResponse(serializers.serialize('json', reviews), content_type='application/json')
@@ -59,4 +67,29 @@ def delete_review(request, review_id):
     review = get_object_or_404(Review, review_id=review_id)
     review.delete()
     return HttpResponse(status=204  )
+
+@csrf_exempt
+def create_review_flutter(request, book_id):
+
+    try:
+        if request.user.role != 'READER':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        new_review = Review.objects.create(
+            user_id=request.user,
+            book_id=Book.objects.get(book_id=book_id),
+            review_text=data['content'],
+            review_rating=data['rating'],
+        )
+
+        new_review.save()
+
+        return JsonResponse({'message': 'Review created successfully.', 'status': 200}, status=200)
+    else:
+        return JsonResponse({'message': 'Error creating review.', 'status': 401}, status=401)
     
