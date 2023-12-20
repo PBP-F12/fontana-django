@@ -88,7 +88,8 @@ def login_user_api(request):
                         "username": user.username,
                         "status": True,
                         "message": "Login sukses!",
-                        'role': user.role
+                        'role': user.role,
+                        'username': user.username
                         # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
                     }, status=200)
                 else:
