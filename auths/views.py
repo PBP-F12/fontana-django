@@ -86,28 +86,27 @@ def login_user_api(request):
                     # Status login sukses.
                     return JsonResponse({
                         "username": user.username,
-                        "status": True,
                         "message": "Login sukses!",
                         'role': user.role,
-                        'username': user.username
+                        "status": 200,
                         # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
                     }, status=200)
                 else:
                     return JsonResponse({
-                        "status": False,
+                        "status": 401,
                         "message": "Login gagal, akun dinonaktifkan."
                     }, status=401)
 
             else:
                 return JsonResponse({
-                    "status": False,
-                    "message": "Login gagal, periksa kembali email atau kata sandi."
-                }, status=401)
+                    "message": "Login gagal, periksa kembali email atau kata sandi.",
+                    "status": 404,
+                }, status=404)
         except:
             return JsonResponse({'message': 'No payload provided', 'status': 400}, status=400)
     else:
         return JsonResponse({
-            "status": False,
+            "status": 400,
             "message": "Bad request"
         }, status=400)
 
@@ -121,7 +120,8 @@ def register_as_reader_api(request):
         try:
             user = User.objects.get(username=username)
             return JsonResponse({
-                "message": "Username is already exist"
+                "message": "Username is already exist",
+                'status': 409,
             }, status=409)
         except ObjectDoesNotExist:
             form = ReaderRegistrationForm(request.POST)
@@ -129,19 +129,22 @@ def register_as_reader_api(request):
                 form.save()
 
                 return JsonResponse({
-                    "message": "Register success"
+                    "message": "Register success",
+                    'status': 200,
                 }, status=200)
 
             else:
-                return JsonResponse({"message": "Form is not valid."}, status=400)
+                return JsonResponse({"message": "Form is not valid.", 'status': 400, }, status=400)
         except Exception as e:
             print(f'Error: {e}')
             return JsonResponse({
-                "message": "Internal Server Error."
+                "message": "Internal Server Error.",
+                'status': 500,
             }, status=500)
     else:
         return JsonResponse({
-            "message": "Bad request"
+            "message": "Bad request",
+            'status': 400,
         }, status=400)
 
 
@@ -154,7 +157,8 @@ def register_as_author_api(request):
         try:
             user = User.objects.get(username=username)
             return JsonResponse({
-                "message": "Username is already exist"
+                "message": "Username is already exist",
+                'status': 409,
             }, status=409)
         except ObjectDoesNotExist:
             form = AuthorRegistrationForm(request.POST)
@@ -162,19 +166,22 @@ def register_as_author_api(request):
                 form.save()
 
                 return JsonResponse({
-                    "message": "Register success"
+                    "message": "Register success",
+                    'status': 200,
                 }, status=200)
 
             else:
-                return JsonResponse({"message": "Form is not valid."}, status=400)
+                return JsonResponse({"message": "Form is not valid.", 'status': 400, }, status=400)
         except Exception as e:
             print(f'Error: {e}')
             return JsonResponse({
-                "message": "Internal Server Error."
+                "message": "Internal Server Error.",
+                'status': 500,
             }, status=500)
     else:
         return JsonResponse({
-            "message": "Bad request"
+            "message": "Bad request",
+            'status': 400,
         }, status=400)
 
 
@@ -194,3 +201,28 @@ def logout_user_api(request):
             "status": 401,
             "message": "Logout gagal."
         }, status=401)
+
+
+@csrf_exempt
+def get_user_data(request):
+    try:
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
+    if request.method == 'GET':
+        try:
+            user = request.user
+
+            return JsonResponse({'message': 'Success!', 'status': 200, "user": {
+                "username": user.username,
+                "fullName": user.full_name,
+                "role": user.role
+            }}, status=200)
+        except ObjectDoesNotExist:
+            return JsonResponse({'message': 'User not found.', 'status': 404}, status=404)
+        except:
+            return JsonResponse({'message': 'Internal Server Error.', 'status': 500}, status=500)
+    else:
+        return JsonResponse({'message': 'Bad Request.', 'status': 400}, status=400)

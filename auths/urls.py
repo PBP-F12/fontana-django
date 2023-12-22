@@ -13,4 +13,5 @@ urlpatterns = [
          name='register_as_reader_api'),
     path('api/register/author', register_as_author_api,
          name='register_as_author_api'),
+    path('api/user', get_user_data, name='get_user_data')
 ]
