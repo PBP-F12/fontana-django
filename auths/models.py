@@ -17,7 +17,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=50, choices=Role.choices)
     full_name = models.CharField(max_length=255, null=True)
     profile_picture = models.ImageField(
-        null=True, blank=True, upload_to='profile/', editable=True)
+        null=True, blank=True, upload_to='profile/', editable=True, default='profile/default/blank_profile.png')
 
     @property
     def is_reader(self):

@@ -87,6 +87,7 @@ def login_user_api(request):
                     login(request, user)
                     # Status login sukses.
                     return JsonResponse({
+                        'userId': user.id,
                         "username": user.username,
                         "message": "Login sukses!",
                         'role': user.role,
@@ -232,39 +233,17 @@ def get_user_data(request):
 
 @csrf_exempt
 def upload_profile_picture(request):
-    try:
-        if request.user.role != 'READER' and request.user.role != 'AUTHOR' and request.user.role != 'ADMIN':
-            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
-    except:
-        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
-
     if request.method == 'POST':
+        try:
+            if request.user.role != 'READER' and request.user.role != 'AUTHOR' and request.user.role != 'ADMIN':
+                return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+        except:
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
         if request.FILES:
             profile_picture = request.FILES['profile_picture']
 
             user = User.objects.get(pk=request.user.id)
-            # old_profile_picture = user.profile_picture
-
-            # try:
-            #     form = ProfilePictureForm(
-            #         request.POST, request.FILES, instance=user)
-
-            #     if form.is_valid():
-            #         if old_profile_picture:
-            #             old_profile_picture_path = old_profile_picture.path
-
-            #             if path.exists(old_profile_picture_path):
-            #                 os.remove(old_profile_picture_path)
-
-            #         form.save()
-            #         return JsonResponse({'message': 'Success!', 'status': 200}, status=200)
-            #     else:
-            #         return JsonResponse({'message': 'Form is not valid.', 'status': 400}, status=400)
-
-            # except Exception as e:
-            #     print(e)
-            #     return JsonResponse({'message': 'Internal server error.', 'status': 500}, status=500)
-
             user.profile_picture = profile_picture
             user.save()
             print(user.username)
@@ -274,7 +253,12 @@ def upload_profile_picture(request):
             return JsonResponse({'message': 'Bad Request. No file received.', 'status': 400}, status=400)
 
     elif request.method == 'GET':
-        user = User.objects.get(pk=request.user.id)
+        user_id = request.GET.get('id')
+
+        if not user_id:
+            return JsonResponse({'message': 'Bad Request.', 'status': 400}, status=400)
+
+        user = User.objects.get(pk=user_id)
 
         return FileResponse(user.profile_picture)
 
