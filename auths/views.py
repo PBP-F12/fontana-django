@@ -234,20 +234,22 @@ def get_user_data(request):
 @csrf_exempt
 def upload_profile_picture(request):
     if request.method == 'POST':
-        try:
-            if request.user.role != 'READER' and request.user.role != 'AUTHOR' and request.user.role != 'ADMIN':
-                return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
-        except:
-            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+        user_id = request.GET.get('id')
 
         if request.FILES:
             profile_picture = request.FILES['profile_picture']
 
-            user = User.objects.get(pk=request.user.id)
-            user.profile_picture = profile_picture
-            user.save()
-            print(user.username)
-            return JsonResponse({'message': 'success'}, status=200)
+            try:
+                user = User.objects.get(pk=user_id)
+                user.profile_picture = profile_picture
+                user.save()
+                print(user.username)
+                return JsonResponse({'message': 'success'}, status=200)
+            except ObjectDoesNotExist:
+                return JsonResponse({'message': 'Bad Request. No file received.', 'status': 404}, status=404)
+            except Exception as e:
+                print(e)
+                return JsonResponse({'message': 'Bad Request. No file received.', 'status': 500}, status=500)
 
         else:
             return JsonResponse({'message': 'Bad Request. No file received.', 'status': 400}, status=400)
