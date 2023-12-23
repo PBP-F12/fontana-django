@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.contrib import messages
 from django.core import serializers
@@ -233,7 +233,7 @@ def get_user_data(request):
 @csrf_exempt
 def upload_profile_picture(request):
     try:
-        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR' and request.user.role != 'ADMIN':
             return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
     except:
         return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
@@ -272,5 +272,11 @@ def upload_profile_picture(request):
 
         else:
             return JsonResponse({'message': 'Bad Request. No file received.', 'status': 400}, status=400)
+
+    elif request.method == 'GET':
+        user = User.objects.get(pk=request.user.id)
+
+        return FileResponse(user.profile_picture)
+
     else:
         return JsonResponse({'message': 'Bad Request.', 'status': 400}, status=400)
