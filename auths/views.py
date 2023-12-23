@@ -209,7 +209,7 @@ def logout_user_api(request):
 @csrf_exempt
 def get_user_data(request):
     try:
-        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR' and request.user.role != 'ADMIN':
             return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
     except:
         return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
