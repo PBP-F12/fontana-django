@@ -16,6 +16,8 @@ class User(AbstractUser):
 
     role = models.CharField(max_length=50, choices=Role.choices)
     full_name = models.CharField(max_length=255, null=True)
+    profile_picture = models.ImageField(
+        null=True, blank=True, upload_to='profile/', editable=True)
 
     @property
     def is_reader(self):
@@ -24,7 +26,8 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if not self.pk:  # if user doesn't have a primary key, or if user hasn't been created then...
             self.role = self.base_role
-            return super().save(*args, **kwargs)
+
+        return super().save(*args, **kwargs)
 
 
 class AuthorManager(BaseUserManager):

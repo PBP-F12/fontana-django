@@ -4,11 +4,13 @@ from django.contrib import messages
 from django.core import serializers
 
 from .models import Reader, User
-from .forms import AuthorRegistrationForm, ReaderRegistrationForm
+from .forms import AuthorRegistrationForm, ProfilePictureForm, ReaderRegistrationForm
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
+from os import path
+import os
 
 # Create your views here.
 
@@ -224,5 +226,51 @@ def get_user_data(request):
             return JsonResponse({'message': 'User not found.', 'status': 404}, status=404)
         except:
             return JsonResponse({'message': 'Internal Server Error.', 'status': 500}, status=500)
+    else:
+        return JsonResponse({'message': 'Bad Request.', 'status': 400}, status=400)
+
+
+@csrf_exempt
+def upload_profile_picture(request):
+    try:
+        if request.user.role != 'READER' and request.user.role != 'AUTHOR':
+            return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+    except:
+        return JsonResponse({'message': 'Forbidden.', 'status': 403}, status=403)
+
+    if request.method == 'POST':
+        if request.FILES:
+            profile_picture = request.FILES['profile_picture']
+
+            user = User.objects.get(pk=request.user.id)
+            # old_profile_picture = user.profile_picture
+
+            # try:
+            #     form = ProfilePictureForm(
+            #         request.POST, request.FILES, instance=user)
+
+            #     if form.is_valid():
+            #         if old_profile_picture:
+            #             old_profile_picture_path = old_profile_picture.path
+
+            #             if path.exists(old_profile_picture_path):
+            #                 os.remove(old_profile_picture_path)
+
+            #         form.save()
+            #         return JsonResponse({'message': 'Success!', 'status': 200}, status=200)
+            #     else:
+            #         return JsonResponse({'message': 'Form is not valid.', 'status': 400}, status=400)
+
+            # except Exception as e:
+            #     print(e)
+            #     return JsonResponse({'message': 'Internal server error.', 'status': 500}, status=500)
+
+            user.profile_picture = profile_picture
+            user.save()
+            print(user.username)
+            return JsonResponse({'message': 'success'}, status=200)
+
+        else:
+            return JsonResponse({'message': 'Bad Request. No file received.', 'status': 400}, status=400)
     else:
         return JsonResponse({'message': 'Bad Request.', 'status': 400}, status=400)
