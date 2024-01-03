@@ -112,8 +112,9 @@ def get_detail_book(request, book_id):
                 'rating': book.avg_rating,
                 'description': book.description,
                 'author': {
-                    'username': book.author_id.username
-                }
+                    'username': book.author_id.username,
+                },
+                'isRequesterIsTheAuthor': book.author_id.username == request.user.username
             }}, status=200)
         except ObjectDoesNotExist:
             return JsonResponse({'message': 'Not found.', 'status': 404}, status=404)
