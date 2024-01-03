@@ -98,6 +98,7 @@ def display_all_forums_ajax(request):
                 'cover': forum.book_topic.book_cover_link,
                 'title': forum.book_topic.book_title
             },
+            'creatorId': forum.forum_creator_id.id,
             'creatorUsername': forum.forum_creator_id.username,
             'numberOfComments': forum.num_comments
         }
