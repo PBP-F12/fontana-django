@@ -1,4 +1,4 @@
-from typing import Mapping, Optional, TypeVar, Generic, TypedDict, Literal, Any
+from typing import Mapping, NotRequired, Optional, TypeVar, Generic, TypedDict, Literal, Any
 from rest_framework.response import Response as RESTResponse
 from rest_framework import status as rest_status
 
@@ -81,7 +81,7 @@ ContentTypeResponse = Optional[str]
 class ResponseDict(TypedDict):
     code: HttpStatus
     success: bool
-    data: Optional[Any]
+    data: NotRequired[Any]
     message: str
 
 
