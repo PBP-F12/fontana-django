@@ -68,7 +68,7 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SAMESITE = 'None'
 
-ROOT_URLCONF = 'bookshelve_django.urls'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
@@ -86,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'bookshelve_django.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
